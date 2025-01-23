@@ -148,12 +148,12 @@ jobs:
       - name: Make download
         run: |
           cd $BUILD_OPENWRT
-          make download -j1 V=s
+          make download -j8 V=s
           df -h
 
       - name: Build the firmware image
         id: compile
-        if : github.event.inputs.debug == 'false'
+        if: github.event.inputs.debug == 'false'
         run: |
           cd $BUILD_OPENWRT && echo "$(($(nproc)+1)) thread compile"
           make prepare -j$(($(nproc)+1)) 
@@ -166,7 +166,7 @@ jobs:
 
       - name: Build the firmware image DEBUG
         id: compile_debug
-        if : github.event.inputs.debug == 'true'
+        if: github.event.inputs.debug == 'true'
         run: |
           cd $BUILD_OPENWRT && echo "DEBUG compile"
           make prepare -j1
