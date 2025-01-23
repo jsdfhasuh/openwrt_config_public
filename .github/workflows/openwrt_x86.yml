@@ -56,6 +56,10 @@ jobs:
       FILE_DATE: unknown
       FIRMWARE: unknown
     steps:
+      - name: test debug
+        if: github.event.inputs.debug == 'true'
+        run: |
+          echo "debug mode"
       - name: Free Disk Space (Ubuntu)
         uses: jlumbroso/free-disk-space@main
         with:
