@@ -57,7 +57,7 @@ jobs:
       FIRMWARE: unknown
     steps:
       - name: test debug
-        if: github.event.inputs.debug == 'true'
+        if: github.event.inputs.debug == 'false'
         run: |
           echo "debug mode"
       - name: Free Disk Space (Ubuntu)
