@@ -113,6 +113,9 @@ jobs:
           git clone https://github.com/openwrt/openwrt.git $BUILD_OPENWRT
           ls -al $BUILD_OPENWRT
 
+      - name: move_custom_files
+        run: |
+          mv $openwrt_files $BUILD_OPENWRT/files
 
       - name: Start SSH via tmate
         uses: rdp-studio/ssh2actions@main
