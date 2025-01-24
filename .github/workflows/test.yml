@@ -52,6 +52,6 @@ jobs:
           uses: actions/checkout@main
         - name: test custom.sh
           run: |
-            cd BUILD_ROOT
+            cd $BUILD_ROOT
             echo "test custom.sh"
             bash custom.sh $ARCHITECTURE $BUILD_ROOT
