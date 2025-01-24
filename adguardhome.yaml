@@ -99,11 +99,6 @@ querylog:
 statistics:
   dir_path: ""
   ignored:
-    - 5b84169.b1.glados-config.net
-    - jsdfhasuh.site
-    - '||*.glados-config.'
-    - '||*.gladns.'
-    - '||*.mjt000.com'
   interval: 168h
   enabled: true
 filters:
