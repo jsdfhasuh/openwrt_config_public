@@ -49,11 +49,12 @@ jobs:
       REPO_BRANCH: main
       BUILD_OPENWRT: ${{ github.workspace }}/openwrt_source_code
       BUILD_ROOT: ${{ github.workspace }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      openwrt_files: ${{ github.workspace }}/openwrt_files
       TZ: Asia/Shanghai
       DEVICE_NAME: unknown
       FILE_DATE: unknown
       FIRMWARE: unknown
+      Architecture: amd64
     steps:
       - name: test debug
         if: github.event.inputs.debug == 'false'
@@ -100,6 +101,12 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@main
+
+      - name: test custom.sh
+        run: |
+          cd $BUILD_ROOT
+          echo "test custom.sh"
+          bash custom.sh $ARCHITECTURE $BUILD_ROOT
       
       - name: PULL Openwrt Source Code
         run: |
@@ -140,6 +147,12 @@ jobs:
         run: |
             cd $BUILD_ROOT
             mv feeds.conf $BUILD_OPENWRT/feeds.conf
+      
+      - name: Change ash to bash
+        run: |
+            cd $BUILD_OPENWRT
+            sed -i 's/ash/bash/g' package/base-files/files/etc/shells
+            sed -i 's/ash/bash/g' package/base-files/files/etc/passwd
 
 
       - name: Update feeds
