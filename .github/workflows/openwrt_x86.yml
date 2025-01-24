@@ -122,6 +122,12 @@ jobs:
           git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
           ls "package/mosdns"
           echo "src-git mosdns success"
+
+      - name: Install luci-app-adguardhome
+        run: |
+          cd $BUILD_OPENWRT
+          echo "src-git adguardhome"
+          git clone https://github.com/rufengsuixing/luci-app-adguardhome package/luci-app-adguardhome
       
       - name: Install turboacc
         run: |
