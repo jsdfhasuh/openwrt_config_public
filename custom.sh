@@ -12,3 +12,4 @@ echo "Clash core dir: $clash_core_dir"
 mkdir -p "$clash_core_dir"
 echo "Downloading clash core from $clash_core_url"
 curl -L -o $clash_core_dir/clash_meta $clash_core_url
+ls -l $clash_core_dir
