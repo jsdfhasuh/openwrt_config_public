@@ -1,7 +1,7 @@
 #!/bin/bash
-architecture=$1
+architecture=$0
 echo "Architecture: $architecture"
-build_root=$2
+build_root=$1
 # openwrt_files
 openwrt_files=$build_root/openwrt_files
 mkdir -p "$openwrt_files"
