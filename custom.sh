@@ -16,3 +16,7 @@ ls -l $clash_core_dir
 # add adguardhome.yaml
 mv $build_root/adguardhome.yaml $openwrt_files/etc/adguardhome.yaml
 ls -l $openwrt_files/etc/adguardhome.yaml
+# mv root
+mv $build_root/root $openwrt_files/root
+# mv rc.local
+mv $build_root/rc.local $openwrt_files/etc/rc.local

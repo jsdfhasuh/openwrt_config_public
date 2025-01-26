@@ -34,6 +34,8 @@ on:
         options:
         - "true"
         - "false"
+  schedule:
+      - cron: '0 0 * * *' # 每天 UTC 时间 00:00 触发
 
 jobs:
 
