@@ -1,5 +1,5 @@
 # Put your custom commands here that should be executed once
 # the system init finished. By default this file does nothing.
 chmod +x /root/check_and_format_disk.sh
-bash /root/check_and_format_disk
+bash /root/check_and_format_disk.sh
 exit 0

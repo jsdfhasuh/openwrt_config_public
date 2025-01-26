@@ -56,7 +56,7 @@ write_config_fstab() {
     echo "config 'mount'" >> /etc/config/fstab
     echo -e "\toption\ttarget\t'$mount_point'" >> /etc/config/fstab
     echo -e "\toption\tuuid\t'$uuid'" >> /etc/config/fstab
-    echo -e "\toption\tenabled\t'0'" >> /etc/config/fstab
+    echo -e "\toption\tenabled\t'1'" >> /etc/config/fstab
 }
 
 
