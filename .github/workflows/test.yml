@@ -1,13 +1,6 @@
 name: test
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/openwrt_x86.yml'
-      - 'x86.config'
-      - 'feeds.conf'
   workflow_dispatch:
     inputs:
       ssh:

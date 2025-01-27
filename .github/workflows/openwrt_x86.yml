@@ -70,7 +70,7 @@ jobs:
           fi
 
       - name: test debug
-        if: ${{ env.DEBUG }} == 'false'
+        if: ${{ env.DEBUG }} == 'true'
         run: |
           echo "debug mode"
       - name: Free Disk Space (Ubuntu)
