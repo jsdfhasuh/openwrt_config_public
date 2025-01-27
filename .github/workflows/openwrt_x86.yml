@@ -70,7 +70,7 @@ jobs:
           fi
 
       - name: test debug
-        if: steps.organize.outputs.DEBUG  == 'true'
+        if: steps.vars.outputs.DEBUG  == 'true'
         run: |
           echo "debug mode"
       - name: Free Disk Space (Ubuntu)
@@ -132,7 +132,7 @@ jobs:
 
       - name: Start SSH via tmate
         uses: rdp-studio/ssh2actions@main
-        if: github.event.inputs.ssh == 'true'
+        if: steps.vars.outputs.DEBUG  == 'true'
 
 
       - name: Install mosdns
@@ -191,7 +191,7 @@ jobs:
 
       - name: Build the firmware image
         id: compile
-        if: ${{ env.DEBUG }} == 'false'
+        if: steps.vars.outputs.DEBUG  == 'false'
         run: |
           cd $BUILD_OPENWRT && echo "$(($(nproc)+1)) thread compile"
           make prepare -j$(($(nproc)+1)) 
@@ -204,7 +204,7 @@ jobs:
 
       - name: Build the firmware image DEBUG
         id: compile_debug
-        if: ${{ env.DEBUG }} == 'true'
+        if: steps.vars.outputs.DEBUG  == 'true'
         run: |
           cd $BUILD_OPENWRT && echo "DEBUG compile"
           make prepare -j1
