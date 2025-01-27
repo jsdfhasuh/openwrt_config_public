@@ -62,15 +62,15 @@ jobs:
         id: vars
         run: |
           if [ "${{ github.event_name }}" == "schedule" ]; then
-            echo "SSH=false" >> $GITHUB_ENV
-            echo "DEBUG=false" >> $GITHUB_ENV
+            echo "SSH=false" >> $GITHUB_OUTPUT
+            echo "DEBUG=false" >> $GITHUB_OUTPUT
           else
-            echo "SSH=${{ github.event.inputs.ssh }}" >> $GITHUB_ENV
-            echo "DEBUG=${{ github.event.inputs.debug }}" >> $GITHUB_ENV
+            echo "SSH=${{ github.event.inputs.ssh }}" >> $GITHUB_OUTPUT
+            echo "DEBUG=${{ github.event.inputs.debug }}" >> $GITHUB_OUTPUT
           fi
 
       - name: test debug
-        if: ${{ env.DEBUG }} == 'true'
+        if: steps.organize.outputs.DEBUG  == 'true'
         run: |
           echo "debug mode"
       - name: Free Disk Space (Ubuntu)
