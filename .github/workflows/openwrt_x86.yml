@@ -35,7 +35,7 @@ on:
         - "true"
         - "false"
   schedule:
-      - cron: '* */4 * * *' # 每天 UTC 时间 00:00 触发
+      - cron: '0 8 * * *' # 每天 UTC 时间 00:00 触发
       
 
 jobs:
