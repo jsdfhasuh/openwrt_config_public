@@ -226,18 +226,15 @@ jobs:
       - name: Organize files
         id: organize
         run: |
+          cd $BUILD_OPENWRT/bin/packages/* 
+          tar -czf packages.tar.gz *
+          mv packages.tar.gz $BUILD_OPENWRT/bin/targets/*/*
           cd $BUILD_OPENWRT/bin/targets/*/* && rm -rf packages
           { echo '### SHA256SUMS'; echo '```txt'; cat sha256sums; echo '```'; } > $BUILD_OPENWRT/SHA256SUMS
           echo "FIRMWARE=$PWD"
           echo "FIRMWARE=$PWD" >> $GITHUB_ENV
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Upload firmware directory
-        uses: actions/upload-artifact@main
-        if: steps.organize.outputs.status == 'success'
-        with:
-          name: OpenWrt_firmware_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
-          path: ${{ env.FIRMWARE }}
  
       - name: Generate stable Release Tag
         id: stabletag
