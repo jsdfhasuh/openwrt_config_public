@@ -242,11 +242,6 @@ jobs:
           echo "release_tag=$(cd $BUILD_OPENWRT && git describe --tags --abbrev=0 --exact-match)_$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
           echo "status=success" >> $GITHUB_OUTPUT
 
-      - name: Generate snapshot Release Tag
-        id: snapshottag 
-        run: |
-          echo "release_tag=SNAPSHOT_$(date +"%Y.%m.%d-%H%M")" >> $GITHUB_OUTPUT
-          echo "status=success" >> $GITHUB_OUTPUT
 
       - name: Upload stable firmware to Release
         uses: softprops/action-gh-release@master
@@ -256,17 +251,6 @@ jobs:
           GITHUB_REPOSITORY: ${{ github.repository }}
         with:
           tag_name: ${{ steps.stabletag.outputs.release_tag }}
-          files: ${{ env.FIRMWARE }}/*
-          body_path: ${{ env.BUILD_OPENWRT }}/SHA256SUMS
-
-      - name: Upload snapshot firmware to Release
-        uses: softprops/action-gh-release@master
-        if: steps.snapshottag.outputs.status == 'success'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        with:
-          tag_name: ${{ steps.snapshottag.outputs.release_tag }}
           files: ${{ env.FIRMWARE }}/*
           body_path: ${{ env.BUILD_OPENWRT }}/SHA256SUMS
 
