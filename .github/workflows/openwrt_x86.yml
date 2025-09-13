@@ -133,28 +133,28 @@ jobs:
         if: steps.vars.outputs.DEBUG  == 'true'
 
 
-      - name: Install mosdns
-        run: |
-          cd $BUILD_OPENWRT
-          echo "src-git mosdns"
-          rm -rf feeds/packages/net/v2ray-geodata
-          git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
-          git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
-          ls "package/mosdns"
-          echo "src-git mosdns success"
+      # - name: Install mosdns
+      #   run: |
+      #     cd $BUILD_OPENWRT
+      #     echo "src-git mosdns"
+      #     rm -rf feeds/packages/net/v2ray-geodata
+      #     git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+      #     git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+      #     ls "package/mosdns"
+      #     echo "src-git mosdns success"
 
-      - name: Install luci-app-adguardhome
-        run: |
-          cd $BUILD_OPENWRT
-          echo "src-git adguardhome"
-          git clone https://github.com/rufengsuixing/luci-app-adguardhome package/luci-app-adguardhome
+      # - name: Install luci-app-adguardhome
+      #   run: |
+      #     cd $BUILD_OPENWRT
+      #     echo "src-git adguardhome"
+      #     git clone https://github.com/rufengsuixing/luci-app-adguardhome package/luci-app-adguardhome
       
-      - name: Install turboacc
-        run: |
-          echo "src-git turboacc"
-          cd $BUILD_OPENWRT
-          curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
-          ls "package/turboacc"
+      # - name: Install turboacc
+      #   run: |
+      #     echo "src-git turboacc"
+      #     cd $BUILD_OPENWRT
+      #     curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
+      #     ls "package/turboacc"
 
 
       - name: Install custom feeds and config
