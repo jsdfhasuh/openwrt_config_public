@@ -192,8 +192,6 @@ jobs:
         if: steps.vars.outputs.DEBUG  == 'false'
         run: |
           cd $BUILD_OPENWRT && echo "$(($(nproc)+1)) thread compile"
-          make prepare -j$(($(nproc)+1)) 
-          make package/feeds/luci/luci-base/compile V=s
           make -j$(($(nproc)+1)) world V=s
           echo "status=success" >> $GITHUB_OUTPUT
           grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
@@ -205,8 +203,6 @@ jobs:
         if: steps.vars.outputs.DEBUG  == 'true'
         run: |
           cd $BUILD_OPENWRT && echo "DEBUG compile"
-          make prepare -j1
-          make package/feeds/luci/luci-base/compile V=s
           make -j1 world V=s
           echo "status=success" >> $GITHUB_OUTPUT
           grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
