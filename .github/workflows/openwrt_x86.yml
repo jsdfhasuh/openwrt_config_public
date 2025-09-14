@@ -113,20 +113,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@main
 
-      - name: test custom.sh
-        run: |
-          cd $BUILD_ROOT
-          echo "test custom.sh"
-          bash custom.sh $ARCHITECTURE $BUILD_ROOT $BUILD_OPENWRT
-      
       - name: PULL Openwrt Source Code
         run: |
           git clone https://github.com/openwrt/openwrt.git $BUILD_OPENWRT
           ls -al $BUILD_OPENWRT
-
-      - name: move_custom_files
-        run: |
-          mv $openwrt_files $BUILD_OPENWRT/files
 
       - name: Start SSH via tmate
         uses: rdp-studio/ssh2actions@main
@@ -174,6 +164,16 @@ jobs:
           cd $BUILD_OPENWRT
           ./scripts/feeds update -a 
           ./scripts/feeds install -a
+      
+      - name: test custom.sh
+        run: |
+          cd $BUILD_ROOT
+          echo "test custom.sh"
+          bash custom.sh $ARCHITECTURE $BUILD_ROOT $BUILD_OPENWRT
+      
+      - name: move_custom_files
+        run: |
+          mv $openwrt_files $BUILD_OPENWRT/files
 
       - name: Generate configuration file
         run: |
