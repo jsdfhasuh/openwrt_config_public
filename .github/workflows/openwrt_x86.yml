@@ -117,7 +117,7 @@ jobs:
         run: |
           cd $BUILD_ROOT
           echo "test custom.sh"
-          bash custom.sh $ARCHITECTURE $BUILD_ROOT
+          bash custom.sh $ARCHITECTURE $BUILD_ROOT $BUILD_OPENWRT
       
       - name: PULL Openwrt Source Code
         run: |

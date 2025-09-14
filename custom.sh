@@ -1,7 +1,11 @@
 #!/bin/bash
 architecture=$0
+echo "Custom script started"
 echo "Architecture: $architecture"
 build_root=$1
+BUILD_OPENWRT=$2
+echo "Build root: $build_root"
+echo "Build openwrt: $BUILD_OPENWRT"
 # openwrt_files
 openwrt_files=$build_root/openwrt_files
 mkdir -p "$openwrt_files"
@@ -20,3 +24,10 @@ ls -l $openwrt_files/etc/adguardhome.yaml
 mv $build_root/root $openwrt_files/root
 # mv rc.local
 mv $build_root/rc.local $openwrt_files/etc/rc.local
+
+# fixed rust host build download llvm in ci error
+cat $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile | grep -q -- 'llvm.download-ci-llvm' || echo "llvm.download-ci-llvm not found"
+sed -i 's/--set=llvm\.download-ci-llvm=false/--set=llvm.download-ci-llvm=true/' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile
+grep -q -- '--ci false \\' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile || sed -i '/x\.py \\/a \        --ci false \\' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile
+
+echo "custom is complete!"
