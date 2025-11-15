@@ -10,12 +10,6 @@
 name: OpenWrt-x86-build
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'x86.config'
-      - 'feeds.conf'
   workflow_dispatch:
     inputs:
       ssh:
@@ -263,4 +257,5 @@ jobs:
           keep_latest: 5
           delete_tags: true
         env:
+
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
