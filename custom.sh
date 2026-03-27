@@ -27,7 +27,7 @@ mv $build_root/rc.local $openwrt_files/etc/rc.local
 
 # fixed rust host build download llvm in ci error
 cat $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile | grep -q -- 'llvm.download-ci-llvm' || echo "llvm.download-ci-llvm not found"
-sed -i 's/--set=llvm\.download-ci-llvm=false/--set=llvm.download-ci-llvm=true/' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile
+sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile
 grep -q -- '--ci false \\' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile || sed -i '/x\.py \\/a \        --ci false \\' $BUILD_OPENWRT/feeds/packages/lang/rust/Makefile
 
 echo "custom is complete!"
