@@ -48,7 +48,7 @@ jobs:
       DEVICE_NAME: unknown
       FILE_DATE: unknown
       FIRMWARE: unknown
-      Architecture: amd64
+      ARCHITECTURE: amd64
     steps:
       - name: Determine SSH and Debug mode
         id: vars
@@ -161,12 +161,12 @@ jobs:
         run: |
           cd $BUILD_ROOT
           echo "test custom.sh"
-          bash custom.sh $ARCHITECTURE $BUILD_ROOT $BUILD_OPENWRT
+          bash custom.sh "$ARCHITECTURE" "$BUILD_ROOT" "$BUILD_OPENWRT"
 
       
       - name: move_custom_files
         run: |
-          mv $openwrt_files $BUILD_OPENWRT/files
+          mv "$openwrt_files" "$BUILD_OPENWRT/files"
 
       - name: Generate configuration file
         run: |
