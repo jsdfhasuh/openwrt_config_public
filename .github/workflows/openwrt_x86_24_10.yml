@@ -1,0 +1,300 @@
+name: OpenWrt-x86-build-24.10
+
+on:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - "true"
+          - "false"
+      debug:
+        description: 'Debug mode'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - "true"
+          - "false"
+      python_pip:
+        description: 'Build python3-pip'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - "true"
+          - "false"
+      vsftpd:
+        description: 'Build vsftpd'
+        required: true
+        default: 'true'
+        type: choice
+        options:
+          - "true"
+          - "false"
+
+jobs:
+  build_openwrt:
+    name: Build OpenWrt firmware 24.10
+    runs-on: ubuntu-24.04
+    permissions: write-all
+    env:
+      DEPENDENCIES: "antlr3 aria2 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler fastjar file flex g++ gawk gcc-multilib gettext git gperf haveged help2man intltool libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz man-db mkisofs msmtp nano ninja-build p7zip p7zip-full patch pigz pkgconf python3 python3-pip qemu-utils rename rsync scons squashfs-tools subversion swig tar texinfo time uglifyjs unzip upx upx-ucl vim wget xmlto xxd zlib1g-dev zip"
+      REPO_URL: https://github.com/openwrt/openwrt.git
+      REPO_BRANCH: openwrt-24.10
+      FEEDS_BRANCH: openwrt-24.10
+      BUILD_OPENWRT: ${{ github.workspace }}/openwrt_source_code
+      BUILD_ROOT: ${{ github.workspace }}
+      openwrt_files: ${{ github.workspace }}/openwrt_files
+      TZ: Asia/Shanghai
+      DEVICE_NAME: unknown
+      FILE_DATE: unknown
+      FIRMWARE: unknown
+      ARCHITECTURE: amd64
+    steps:
+      - name: Determine SSH and Debug mode
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "SSH=false" >> "$GITHUB_OUTPUT"
+            echo "DEBUG=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "SSH=${{ github.event.inputs.ssh }}" >> "$GITHUB_OUTPUT"
+            echo "DEBUG=${{ github.event.inputs.debug }}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: test debug
+        if: steps.vars.outputs.DEBUG == 'true'
+        run: |
+          echo "debug mode"
+
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+
+      - name: Check environment
+        run: |
+          echo "TZ=$TZ"
+          echo "DEPENDENCIES=$DEPENDENCIES"
+          echo "REPO_URL=$REPO_URL"
+          echo "REPO_BRANCH=$REPO_BRANCH"
+          echo "FEEDS_BRANCH=$FEEDS_BRANCH"
+          echo "BUILD_OPENWRT=$BUILD_OPENWRT"
+          echo "BUILD_ROOT=$BUILD_ROOT"
+          echo "ARCHITECTURE=$ARCHITECTURE"
+          echo "python_pip=${{ github.event.inputs.python_pip }}"
+          echo "vsftpd=${{ github.event.inputs.vsftpd }}"
+          echo "DEVICE_NAME=$DEVICE_NAME"
+          echo "FILE_DATE=$FILE_DATE"
+          echo "FIRMWARE=$FIRMWARE"
+
+      - name: Initialization environment
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          sudo apt-get update && sudo apt-get upgrade
+          sudo apt-get -qq install ${DEPENDENCIES}
+          sudo -E apt-get -qq autoremove --purge
+          sudo apt-get -qq clean
+          echo "================================================="
+          echo "文件系统        类型   容量  已用  可用 使用% 挂载点"
+          df -hT "$PWD"
+          sudo timedatectl set-timezone "$TZ"
+          sudo mkdir -p "$BUILD_OPENWRT"
+          sudo chown "$USER:$GROUPS" "$BUILD_OPENWRT"
+
+      - name: Checkout
+        uses: actions/checkout@main
+
+      - name: PULL Openwrt Source Code
+        run: |
+          git clone --branch "$REPO_BRANCH" --single-branch "$REPO_URL" "$BUILD_OPENWRT"
+          ls -al "$BUILD_OPENWRT"
+
+      - name: Start SSH via tmate
+        uses: rdp-studio/ssh2actions@main
+        if: steps.vars.outputs.DEBUG == 'true'
+
+      - name: Install custom feeds and config
+        run: |
+          cp "$BUILD_ROOT/feeds.conf" "$BUILD_OPENWRT/feeds.conf"
+          sed -i 's#^src-git packages https://git.openwrt.org/feed/packages.git$#src-git packages https://git.openwrt.org/feed/packages.git;openwrt-24.10#' "$BUILD_OPENWRT/feeds.conf"
+          sed -i 's#^src-git luci https://git.openwrt.org/project/luci.git$#src-git luci https://git.openwrt.org/project/luci.git;openwrt-24.10#' "$BUILD_OPENWRT/feeds.conf"
+          sed -i 's#^src-git routing https://git.openwrt.org/feed/routing.git$#src-git routing https://git.openwrt.org/feed/routing.git;openwrt-24.10#' "$BUILD_OPENWRT/feeds.conf"
+          sed -i 's#^src-git telephony https://git.openwrt.org/feed/telephony.git$#src-git telephony https://git.openwrt.org/feed/telephony.git;openwrt-24.10#' "$BUILD_OPENWRT/feeds.conf"
+          grep '^src-git ' "$BUILD_OPENWRT/feeds.conf"
+
+      - name: Change ash to bash
+        run: |
+          cd "$BUILD_OPENWRT"
+          sed -i 's/ash/bash/g' package/base-files/files/etc/shells
+          sed -i 's/ash/bash/g' package/base-files/files/etc/passwd
+
+      - name: Update feeds
+        run: |
+          cd "$BUILD_OPENWRT"
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a
+
+      - name: Install mosdns
+        run: |
+          cd "$BUILD_OPENWRT"
+          echo "src-git mosdns"
+          rm -rf feeds/packages/net/v2ray-geodata
+          git clone https://github.com/sbwml/luci-app-mosdns -b v5 package/mosdns
+          git clone https://github.com/sbwml/v2ray-geodata package/v2ray-geodata
+          ls "package/mosdns"
+          echo "src-git mosdns success"
+
+      - name: Install luci-app-adguardhome
+        run: |
+          cd "$BUILD_OPENWRT"
+          echo "src-git adguardhome"
+          git clone https://github.com/rufengsuixing/luci-app-adguardhome package/luci-app-adguardhome
+
+      - name: Install turboacc
+        run: |
+          echo "src-git turboacc"
+          cd "$BUILD_OPENWRT"
+          curl -sSL https://raw.githubusercontent.com/chenmozhijin/turboacc/luci/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
+          ls "package/turboacc"
+
+      - name: test custom.sh
+        run: |
+          cd "$BUILD_ROOT"
+          echo "test custom.sh"
+          bash custom.sh "$ARCHITECTURE" "$BUILD_ROOT" "$BUILD_OPENWRT"
+
+      - name: move_custom_files
+        run: |
+          mv "$openwrt_files" "$BUILD_OPENWRT/files"
+
+      - name: Generate configuration file
+        run: |
+          cd "$BUILD_OPENWRT"
+          cat "$BUILD_ROOT/x86.config" > .config
+
+          sed -i '/^CONFIG_PACKAGE_python3-pip=/d' .config
+          sed -i '/^# CONFIG_PACKAGE_python3-pip is not set/d' .config
+          sed -i '/^CONFIG_PACKAGE_vsftpd=/d' .config
+          sed -i '/^# CONFIG_PACKAGE_vsftpd is not set/d' .config
+
+          if [ "${{ github.event.inputs.python_pip }}" = "true" ]; then
+            echo 'CONFIG_PACKAGE_python3-pip=y' >> .config
+          else
+            echo '# CONFIG_PACKAGE_python3-pip is not set' >> .config
+          fi
+
+          if [ "${{ github.event.inputs.vsftpd }}" = "true" ]; then
+            echo 'CONFIG_PACKAGE_vsftpd=y' >> .config
+          else
+            echo '# CONFIG_PACKAGE_vsftpd is not set' >> .config
+          fi
+
+          make oldconfig
+
+          grep '^CONFIG_PACKAGE_python3-pip=' .config || grep '^# CONFIG_PACKAGE_python3-pip is not set' .config
+          grep '^CONFIG_PACKAGE_vsftpd=' .config || grep '^# CONFIG_PACKAGE_vsftpd is not set' .config
+
+      - name: Make download
+        run: |
+          cd "$BUILD_OPENWRT"
+          make download -j8 V=s
+          df -h
+
+      - name: Prebuild python3-pip
+        if: github.event.inputs.python_pip == 'true'
+        run: |
+          cd "$BUILD_OPENWRT"
+          make package/feeds/packages/python-pip/clean V=sc
+          make package/feeds/packages/python-pip/compile V=sc
+
+      - name: Build the firmware image
+        id: compile
+        if: steps.vars.outputs.DEBUG == 'false'
+        run: |
+          cd "$BUILD_OPENWRT"
+          echo "$(($(nproc)+1)) thread compile"
+          make -j$(($(nproc)+1)) world V=s
+          echo "status=success" >> "$GITHUB_OUTPUT"
+          grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+          [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> "$GITHUB_ENV"
+          echo "FILE_DATE=$(date +"%Y%m%d%H%M")" >> "$GITHUB_ENV"
+
+      - name: Build the firmware image DEBUG
+        id: compile_debug
+        if: steps.vars.outputs.DEBUG == 'true'
+        run: |
+          cd "$BUILD_OPENWRT"
+          echo "DEBUG compile"
+          make -j1 world V=s
+          echo "status=success" >> "$GITHUB_OUTPUT"
+          grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
+          [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> "$GITHUB_ENV"
+          echo "FILE_DATE=$(date +"%Y%m%d%H%M")" >> "$GITHUB_ENV"
+
+      - name: Check space usage
+        run: df -hT
+
+      - name: Upload bin directory
+        uses: actions/upload-artifact@main
+        if: steps.compile.outputs.status == 'success'
+        with:
+          name: OpenWrt_bin_24.10_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+          path: ${{ env.BUILD_OPENWRT }}/bin
+
+      - name: Organize files
+        id: organize
+        run: |
+          cd "$BUILD_OPENWRT/bin/packages"/*
+          tar -czf packages.tar.gz *
+          mv packages.tar.gz "$BUILD_OPENWRT/bin/targets"/*/*
+          cd "$BUILD_OPENWRT/bin/targets"/*/*
+          rm -rf packages
+          { echo '### SHA256SUMS'; echo '```txt'; cat sha256sums; echo '```'; } > "$BUILD_OPENWRT/SHA256SUMS"
+          echo "FIRMWARE=$PWD"
+          echo "FIRMWARE=$PWD" >> "$GITHUB_ENV"
+          echo "status=success" >> "$GITHUB_OUTPUT"
+
+      - name: Generate stable Release Tag
+        id: stabletag
+        run: |
+          echo "release_tag=24.10_$(cd "$BUILD_OPENWRT" && git describe --tags --abbrev=0 --exact-match)_$(date +"%Y.%m.%d-%H%M")" >> "$GITHUB_OUTPUT"
+          echo "status=success" >> "$GITHUB_OUTPUT"
+
+      - name: Upload stable firmware to Release
+        uses: softprops/action-gh-release@master
+        if: steps.stabletag.outputs.status == 'success'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        with:
+          tag_name: ${{ steps.stabletag.outputs.release_tag }}
+          files: ${{ env.FIRMWARE }}/*
+          body_path: ${{ env.BUILD_OPENWRT }}/SHA256SUMS
+
+      - name: Delete workflow runs
+        if: always()
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          retain_days: 30
+          keep_minimum_runs: 5
+
+      - name: Remove old Releases
+        if: always()
+        uses: dev-drprasad/delete-older-releases@master
+        with:
+          keep_latest: 5
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

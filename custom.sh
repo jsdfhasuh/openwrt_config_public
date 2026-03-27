@@ -1,9 +1,9 @@
 #!/bin/bash
-architecture=$0
+architecture=$1
 echo "Custom script started"
 echo "Architecture: $architecture"
-build_root=$1
-BUILD_OPENWRT=$2
+build_root=$2
+BUILD_OPENWRT=$3
 echo "Build root: $build_root"
 echo "Build openwrt: $BUILD_OPENWRT"
 # openwrt_files
