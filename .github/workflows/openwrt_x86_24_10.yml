@@ -35,6 +35,13 @@ on:
         options:
           - "true"
           - "false"
+  push:
+    branches:
+      - main
+    paths:
+      - 'x86.config'
+      - 'custom.sh'
+      - '.github/workflows/openwrt_x86_24_10.yml'
 
 jobs:
   build_openwrt:
@@ -55,15 +62,19 @@ jobs:
       FIRMWARE: unknown
       ARCHITECTURE: amd64
     steps:
-      - name: Determine SSH and Debug mode
+      - name: Determine workflow options
         id: vars
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "SSH=false" >> "$GITHUB_OUTPUT"
-            echo "DEBUG=false" >> "$GITHUB_OUTPUT"
-          else
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "SSH=${{ github.event.inputs.ssh }}" >> "$GITHUB_OUTPUT"
             echo "DEBUG=${{ github.event.inputs.debug }}" >> "$GITHUB_OUTPUT"
+            echo "PYTHON_PIP=${{ github.event.inputs.python_pip }}" >> "$GITHUB_OUTPUT"
+            echo "VSFTPD=${{ github.event.inputs.vsftpd }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "SSH=false" >> "$GITHUB_OUTPUT"
+            echo "DEBUG=false" >> "$GITHUB_OUTPUT"
+            echo "PYTHON_PIP=false" >> "$GITHUB_OUTPUT"
+            echo "VSFTPD=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: test debug
@@ -91,8 +102,8 @@ jobs:
           echo "BUILD_OPENWRT=$BUILD_OPENWRT"
           echo "BUILD_ROOT=$BUILD_ROOT"
           echo "ARCHITECTURE=$ARCHITECTURE"
-          echo "python_pip=${{ github.event.inputs.python_pip }}"
-          echo "vsftpd=${{ github.event.inputs.vsftpd }}"
+          echo "python_pip=${{ steps.vars.outputs.PYTHON_PIP }}"
+          echo "vsftpd=${{ steps.vars.outputs.VSFTPD }}"
           echo "DEVICE_NAME=$DEVICE_NAME"
           echo "FILE_DATE=$FILE_DATE"
           echo "FIRMWARE=$FIRMWARE"
@@ -189,13 +200,13 @@ jobs:
           sed -i '/^CONFIG_PACKAGE_vsftpd=/d' .config
           sed -i '/^# CONFIG_PACKAGE_vsftpd is not set/d' .config
 
-          if [ "${{ github.event.inputs.python_pip }}" = "true" ]; then
+          if [ "${{ steps.vars.outputs.PYTHON_PIP }}" = "true" ]; then
             echo 'CONFIG_PACKAGE_python3-pip=y' >> .config
           else
             echo '# CONFIG_PACKAGE_python3-pip is not set' >> .config
           fi
 
-          if [ "${{ github.event.inputs.vsftpd }}" = "true" ]; then
+          if [ "${{ steps.vars.outputs.VSFTPD }}" = "true" ]; then
             echo 'CONFIG_PACKAGE_vsftpd=y' >> .config
           else
             echo '# CONFIG_PACKAGE_vsftpd is not set' >> .config
@@ -205,6 +216,7 @@ jobs:
 
           grep '^CONFIG_PACKAGE_python3-pip=' .config || grep '^# CONFIG_PACKAGE_python3-pip is not set' .config
           grep '^CONFIG_PACKAGE_vsftpd=' .config || grep '^# CONFIG_PACKAGE_vsftpd is not set' .config
+          grep -E '^CONFIG_(ISO_IMAGES|VMDK_IMAGES)=y$' .config
 
       - name: Make download
         run: |
@@ -213,7 +225,7 @@ jobs:
           df -h
 
       - name: Prebuild python3-pip
-        if: github.event.inputs.python_pip == 'true'
+        if: steps.vars.outputs.PYTHON_PIP == 'true'
         run: |
           cd "$BUILD_OPENWRT"
           make package/feeds/packages/python-pip/clean V=sc
