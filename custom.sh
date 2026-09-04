@@ -6,6 +6,28 @@ build_root=$2
 BUILD_OPENWRT=$3
 echo "Build root: $build_root"
 echo "Build openwrt: $BUILD_OPENWRT"
+
+# Enable VMware VMDK and bootable ISO images for both OpenWrt workflows.
+CONFIG_FILE="$build_root/x86.config"
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo "ERROR: OpenWrt config not found: $CONFIG_FILE" >&2
+    exit 1
+fi
+
+for option in ISO_IMAGES VMDK_IMAGES; do
+    sed -i \
+        -e "/^CONFIG_${option}=.*/d" \
+        -e "/^# CONFIG_${option} is not set$/d" \
+        "$CONFIG_FILE"
+    echo "CONFIG_${option}=y" >> "$CONFIG_FILE"
+done
+
+echo "Enabled image formats:"
+grep -E '^CONFIG_(ISO_IMAGES|VMDK_IMAGES)=y$' "$CONFIG_FILE"
+
+# EFI ISO generation needs mkfs.fat, mmd and mcopy on the GitHub runner.
+sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install -y dosfstools mtools
+
 # openwrt_files
 openwrt_files=$build_root/openwrt_files
 mkdir -p "$openwrt_files"
