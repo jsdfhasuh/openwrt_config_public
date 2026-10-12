@@ -22,7 +22,7 @@
 
 参考用户仓库 `a475f7a2214da748ca229fcd4bb9fb6a81a32964` 的 x86.config。全部 472 个选中条目的迁移处理见 `x86-package-migration.csv`。
 
-显式保留 87 个包配置：Argon 配置及主题、banIP、commands、ddns-go、firewall、mosdns、OpenClash、APK 软件包管理、Samba4、ttyd、UPnP，以及 AdGuard Home、Python3 及现选子模块、WireGuard 工具、SFTP、诊断/磁盘工具、containerd/runc 等。
+显式选择 88 个包配置：Argon 配置及主题、banIP、commands、ddns-go、firewall、mosdns、OpenClash、APK 软件包管理、Samba4、ttyd、UPnP，以及 AdGuard Home、Python3、pip3 及现选子模块、WireGuard 工具、SFTP、诊断/磁盘工具、containerd/runc 等。
 
 - nft-qos 已按用户决定舍弃；官方因多个未修问题将其删除，不盲搬旧版。
 - 当前 x86 未选的旧 ARM dockerman/mwan3/wol 页面/OpenWrt2020 主题不默认加入；etherwake 工具按当前 x86 保留。
@@ -66,3 +66,7 @@ OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、t
 手动运行打包 Action 并输入成功 rootfs 的 run ID，无需重编所有软件。
 也支持 main 上涉及打包脚本的提交中显式写入 `[pack-am6bplus:数字runID]`，
 触发一次只打包运行。普通 push 不打包；失败、PR、外部仓库或非 main rootfs 拒绝。
+
+
+2026-10-12 按用户要求新增 `python3-pip`，其他包和固定源不变。
+构建完成后用最终包清单与 rootfs 中的 pip3 文件核对；旧版不含 pip 的 artifact 保留。
