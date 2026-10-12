@@ -18,6 +18,13 @@ def load(name):
     return module
 
 
+def resolved_core():
+    core = json.loads((ROOT / 'configs/am6bplus/sources.lock.json').read_text())['openclash_core'].copy()
+    core.update(schema=1, resolution_mode='latest', checksums_sha256='b' * 64,
+                checksums_url=f"https://raw.githubusercontent.com/vernesong/OpenClash/{core['commit']}/dev/smart/checksums.txt")
+    return core
+
+
 class TestConfiguration(unittest.TestCase):
     def test_all_sources_are_pinned(self):
         lock = json.loads((ROOT / 'configs/am6bplus/sources.lock.json').read_text())
@@ -70,10 +77,6 @@ class TestConfiguration(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'existing checkout'):
                 module.checkout({}, Path(directory))
 
-
-if __name__ == '__main__':
-    unittest.main()
-
 class TestArtifactIdentity(unittest.TestCase):
     def test_wrong_repository_is_rejected(self):
         module = load('build-artifact')
@@ -107,6 +110,7 @@ class TestArtifactCollection(unittest.TestCase):
             (target / module.ROOTFS_NAME).write_bytes(b'canonical-rootfs')
             (target / 'openwrt-armsr-armv8-generic-targz-rootfs.tar.gz').write_bytes(b'device-image')
             (build / '.config').write_text('CONFIG_USE_APK=y\n')
+            (build / 'resolved-core.json').write_text(json.dumps(resolved_core()))
             output = Path(directory) / 'output'
             env = {'GITHUB_REPOSITORY': 'jsdfhasuh/openwrt_config_public',
                    'GITHUB_SHA': 'a' * 40, 'GITHUB_WORKFLOW': module.WORKFLOW,
@@ -116,6 +120,10 @@ class TestArtifactCollection(unittest.TestCase):
             self.assertEqual((output / module.ROOTFS_NAME).read_bytes(), b'canonical-rootfs')
             manifest = json.loads((output / 'build-manifest.json').read_text())
             self.assertEqual(manifest['run_id'], 123)
+            self.assertEqual(manifest['schema'], 2)
+            self.assertEqual(json.loads((output / 'resolved-core.json').read_text()), resolved_core())
+            self.assertEqual(manifest['files']['resolved-core.json']['sha256'],
+                             module.digest(output / 'resolved-core.json'))
             self.assertEqual(manifest['files'][module.ROOTFS_NAME]['sha256'],
                              hashlib.sha256(b'canonical-rootfs').hexdigest())
 
@@ -128,3 +136,106 @@ class TestArtifactCollection(unittest.TestCase):
             (target / 'openwrt-armsr-armv8-generic-targz-rootfs.tar.gz').write_bytes(b'other')
             with self.assertRaisesRegex(ValueError, 'Missing canonical'):
                 module.create(build, Path(directory) / 'output')
+
+
+class TestResolvedCoreArtifact(unittest.TestCase):
+    def setUp(self):
+        self.module = load('build-artifact')
+        self.temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temporary.cleanup)
+        self.path = Path(self.temporary.name)
+        self.build = self.path / 'build'
+        target = self.build / 'bin/targets/armsr/armv8'
+        target.mkdir(parents=True)
+        (target / self.module.ROOTFS_NAME).write_bytes(b'rootfs')
+        (target / 'packages.manifest').write_text('package - 1.0\n')
+        (self.build / '.config').write_text('CONFIG_USE_APK=y\n')
+        (self.build / 'resolved-core.json').write_text(json.dumps(resolved_core()))
+        self.output = self.path / 'output'
+        repo = {'full_name': 'jsdfhasuh/openwrt_config_public'}
+        self.run_file = self.path / 'run.json'
+        self.run_file.write_text(json.dumps({
+            'repository': repo, 'head_repository': repo, 'event': 'push', 'head_branch': 'main',
+            'name': self.module.WORKFLOW, 'path': '.github/workflows/openwrt_am6bplus_25_12.yml',
+            'status': 'completed', 'conclusion': 'success', 'head_sha': 'a' * 40,
+            'id': 123, 'run_attempt': 1}))
+        patcher = patch.dict('os.environ', {
+            'GITHUB_REPOSITORY': repo['full_name'], 'GITHUB_SHA': 'a' * 40,
+            'GITHUB_WORKFLOW': self.module.WORKFLOW, 'GITHUB_RUN_ID': '123',
+            'GITHUB_RUN_ATTEMPT': '1', 'EXPECTED_CONFIGURATION_SHA': 'a' * 40})
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_schema2_round_trip(self):
+        self.module.create(self.build, self.output)
+        self.module.verify(self.output, self.run_file)
+        manifest = json.loads((self.output / 'build-manifest.json').read_text())
+        self.assertIn('packages.manifest', manifest['files'])
+
+    def test_create_requires_resolved_core(self):
+        (self.build / 'resolved-core.json').unlink()
+        with self.assertRaisesRegex(ValueError, 'resolved-core'):
+            self.module.create(self.build, self.output)
+
+    def test_malformed_resolved_provenance_is_rejected(self):
+        for key, value in [('commit', 'master'), ('commit', 'c' * 40),
+                           ('url', 'https://example.com/core.tar.gz'),
+                           ('url', resolved_core()['url'].replace('clash-linux-arm64', 'clash-linux-amd64')),
+                           ('checksums_url', resolved_core()['checksums_url'].replace(resolved_core()['commit'], 'c' * 40)),
+                           ('architecture', 'amd64'), ('sha256', 'bad'),
+                           ('binary_sha256', 'bad'), ('checksums_sha256', 'bad'),
+                           ('resolution_mode', 'unknown')]:
+            with self.subTest(key=key, value=value):
+                core = resolved_core()
+                core[key] = value
+                (self.build / 'resolved-core.json').write_text(json.dumps(core))
+                with self.assertRaisesRegex(ValueError, 'Invalid resolved core'):
+                    self.module.create(self.build, self.output)
+
+    def test_verify_rejects_missing_or_tampered_resolved(self):
+        self.module.create(self.build, self.output)
+        path = self.output / 'resolved-core.json'
+        path.write_text(path.read_text() + ' ')
+        with self.assertRaisesRegex(ValueError, 'integrity mismatch: resolved-core'):
+            self.module.verify(self.output, self.run_file)
+        path.unlink()
+        with self.assertRaisesRegex(ValueError, 'Invalid artifact file: resolved-core'):
+            self.module.verify(self.output, self.run_file)
+
+    def test_verify_checks_provenance_even_if_hash_is_consistent(self):
+        self.module.create(self.build, self.output)
+        core = resolved_core()
+        core['url'] = core['url'].replace(core['commit'], 'c' * 40)
+        path = self.output / 'resolved-core.json'
+        path.write_text(json.dumps(core))
+        manifest_path = self.output / 'build-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        manifest['files'][path.name] = {'sha256': self.module.digest(path), 'size': path.stat().st_size}
+        manifest_path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, 'Invalid resolved core: url'):
+            self.module.verify(self.output, self.run_file)
+
+    def test_schema2_manifest_cannot_omit_resolved_core(self):
+        self.module.create(self.build, self.output)
+        manifest_path = self.output / 'build-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        del manifest['files']['resolved-core.json']
+        manifest_path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError, 'missing required files'):
+            self.module.verify(self.output, self.run_file)
+
+    def test_legacy_schema1_requires_explicit_option(self):
+        self.module.create(self.build, self.output)
+        manifest_path = self.output / 'build-manifest.json'
+        manifest = json.loads(manifest_path.read_text())
+        manifest['schema'] = 1
+        del manifest['files']['resolved-core.json']
+        manifest_path.write_text(json.dumps(manifest))
+        (self.output / 'resolved-core.json').unlink()
+        with self.assertRaisesRegex(ValueError, 'legacy schema 1 requires explicit approval'):
+            self.module.verify(self.output, self.run_file)
+        self.module.verify(self.output, self.run_file, allow_legacy_schema1=True)
+
+
+if __name__ == '__main__':
+    unittest.main()

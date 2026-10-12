@@ -86,3 +86,23 @@ OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、t
 网络、防火墙与设备发现必须实机验证，不自动替换防火墙或开放端口。
 Home Assistant Container 自带 Python，不依赖宿主 pip3；没有 Supervisor/apps。
 Docker 守护进程、Home Assistant、USB/蓝牙透传及实卡扩容均尚未实机验证（NOT_RUN）。
+
+
+### OpenClash Smart ARM64 内核
+
+按用户指定的 OpenClash Smart 分支，替换此前内置的 Mihomo v1.19.32，
+统一安装在 `/etc/openclash/core/clash_meta`。实际 ARM64 tar 包来自固定 core 提交
+`e18b3dfd13ae0eed92c6f0c05b6303923d1e765f`，压缩包与 ELF 二进制均锁 SHA256。
+不会安装 amd64-v3 包，不执行下载的内核；只验证 ELF64 AArch64 和权限。
+OpenClash 类型设置为 Smart，但服务仍关闭，也没有订阅、代理规则或网络修改。
+锁文件保留 previous_mihomo 历史信息供回退；该旧内核不再同时安装。
+自动打包固定检出对应成功 rootfs 的提交，避免排队期间的内核锁变化串版；
+手动/显式打包提交仍分别记录源 SHA 和打包 SHA，并校验锁摘要一致。
+
+
+默认每次构建开始时解析官方 core 分支最新提交，随后整轮固定该提交中的 Smart ARM64 包。
+手动触发时可填写 openclash_core_commit（完整40位官方提交号）回退；留空为当次最新。
+解析/网络/校验失败直接停止，不悄悄退回旧版。resolved-core.json 记录提交、固定URL、
+官方校验文件摘要、压缩包摘要与实际ELF摘要，随 schema 2 rootfs artifact 保存并校验。
+打包沿用该记录，绝不再次解析最新；旧 schema 1 构建使用自身历史提交的打包代码。
+SHA256用于完整性校验，不等于数字签名或实机兼容性保证。

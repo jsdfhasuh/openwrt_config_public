@@ -79,23 +79,26 @@ jobs:
           assert re.fullmatch('[0-9a-f]{40}', r['head_sha'])
           with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
               out.write(f"sha={r['head_sha']}\n")
+              packaging_sha = r['head_sha'] if os.environ['GITHUB_EVENT_NAME'] == 'workflow_run' else os.environ['GITHUB_SHA']
+              out.write(f"packaging_sha={packaging_sha}\n")
               out.write(f"artifact=am6bplus-rootfs-{r['id']}-{r['run_attempt']}\n")
           PY
       - name: Checkout this trusted packaging revision (rootfs identity remains separate)
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ steps.source.outputs.packaging_sha }}
           persist-credentials: false
       - name: Download only the exact source-run artifact and verify identity
         env:
           GH_TOKEN: ${{ github.token }}
           ARTIFACT_NAME: ${{ steps.source.outputs.artifact }}
           EXPECTED_CONFIGURATION_SHA: ${{ steps.source.outputs.sha }}
+          PACKAGING_SHA: ${{ steps.source.outputs.packaging_sha }}
         run: |
           set -euo pipefail
           mkdir -p "$OUTPUT_DIR/logs"
-          [[ "$(git rev-parse HEAD)" == "$GITHUB_SHA" ]]
-          printf '%s\n' "$GITHUB_SHA" > "$OUTPUT_DIR/packaging-commit.txt"
+          [[ "$(git rev-parse HEAD)" == "$PACKAGING_SHA" ]]
+          printf '%s\n' "$PACKAGING_SHA" > "$OUTPUT_DIR/packaging-commit.txt"
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$REQUESTED_RUN_ID/artifacts?per_page=100" > "$RUNNER_TEMP/am6-artifacts.json"
           python3 - <<'PY'
           import json, os
@@ -108,6 +111,7 @@ jobs:
           python3 scripts/am6bplus/build-artifact.py verify "$INPUT_DIR" "$RUNNER_TEMP/am6-rootfs-run.json"
           cp "$RUNNER_TEMP/am6-rootfs-run.json" "$OUTPUT_DIR/source-run.json"
           cp "$INPUT_DIR/build-manifest.json" "$INPUT_DIR/openwrt.config" "$INPUT_DIR/sources.lock.json" "$OUTPUT_DIR/"
+          if [[ -f "$INPUT_DIR/resolved-core.json" ]]; then cp "$INPUT_DIR/resolved-core.json" "$OUTPUT_DIR/"; fi
       - name: Install upstream packing prerequisites
         run: |
           set -euo pipefail
@@ -138,7 +142,7 @@ jobs:
       - name: Verify and collect the upstream image
         env:
           EXPECTED_CONFIGURATION_SHA: ${{ steps.source.outputs.sha }}
-          PACKAGING_SHA: ${{ github.sha }}
+          PACKAGING_SHA: ${{ steps.source.outputs.packaging_sha }}
         run: |
           set -euo pipefail
           python3 scripts/am6bplus/collect-packit.py "$PACKIT_DIR" "$OUTPUT_DIR"

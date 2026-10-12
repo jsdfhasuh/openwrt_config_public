@@ -3,6 +3,11 @@ name: AM6B Plus - Build ARM64 rootfs 25.12.5
 on:
   workflow_dispatch:
     inputs:
+      openclash_core_commit:
+        description: 'Optional full official OpenClash core commit; blank resolves latest Smart ARM64 once'
+        type: string
+        required: false
+        default: ''
       build_jobs:
         description: 'Parallel compiler jobs (2 is safer on hosted runners)'
         type: choice
@@ -38,6 +43,7 @@ jobs:
       BUILD_DIR: ${{ github.workspace }}/.am6bplus-openwrt
       OUTPUT_DIR: ${{ github.workspace }}/am6bplus-output
       BUILD_JOBS: ${{ inputs.build_jobs || '2' }}
+      OPENCLASH_CORE_COMMIT: ${{ inputs.openclash_core_commit }}
     defaults:
       run:
         shell: bash

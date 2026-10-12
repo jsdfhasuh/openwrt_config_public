@@ -55,6 +55,7 @@ def main(packit, output):
                 'parent_run_id': source_run['id'], 'parent_run_attempt': source_run['run_attempt'],
                 'parent_artifact_id': source_artifact['id'], 'parent_artifact_digest': source_artifact.get('digest'),
                 'pack_run_id': int(os.environ['GITHUB_RUN_ID']), 'pack_run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),
+                'resolved_openclash_core': json.loads((output / 'resolved-core.json').read_text()) if (output / 'resolved-core.json').exists() else None,
                 'image_built': True, 'upstream': patch_manifest, 'rootfs_postflight': postflight, 'image': {'name': target.name, 'sha256': digest(target),
                                                     'raw_sha256': digest(image), 'raw_size': image.stat().st_size},
                 'partitions': table, 'hardware_validation': 'NOT_RUN',

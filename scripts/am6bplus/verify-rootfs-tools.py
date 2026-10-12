@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Read-only validation of requested pip3 and manual SD helper in built rootfs."""
 import hashlib
+import json
+import struct
 from pathlib import Path
 import sys
 import tarfile
@@ -25,6 +27,15 @@ def verify(filename):
                 raise ValueError(f'Rootfs content mismatch: {target}')
             if target.startswith('usr/sbin/') and entry.mode & 0o111 != 0o111:
                 raise ValueError(f'Rootfs helper is not executable: {target}')
+        core = entries.get('etc/openclash/core/clash_meta')
+        if core is None or not core.isfile() or core.mode & 0o111 != 0o111:
+            raise ValueError('Missing executable OpenClash core')
+        binary = archive.extractfile(core).read()
+        locked = json.loads((Path(filename).parent / 'resolved-core.json').read_text())
+        if hashlib.sha256(binary).hexdigest() != locked['binary_sha256']:
+            raise ValueError('OpenClash core hash mismatch')
+        if binary[:6] != b'\x7fELF\x02\x01' or struct.unpack_from('<H', binary, 18)[0] != 183:
+            raise ValueError('OpenClash core architecture mismatch')
         if not any('/site-packages/pip/__init__.py' in name for name in entries):
             raise ValueError('Missing pip Python module')
     print('Actual rootfs pip3, Python, btrfs and manual helper content/permissions verified; no execution.')
