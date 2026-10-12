@@ -45,6 +45,8 @@ am6_assert_device() {
 
 am6_cleanup_owned() {
   local i point source failed=0
+  # Upstream leaves cwd inside TGT_ROOT; release our own reference before umount.
+  cd -- "${WORK_DIR:-/}" || return 1
   for ((i=${#AM6_OWNED_MOUNTS[@]}-1; i>=0; i--)); do
     point=${AM6_OWNED_MOUNTS[$i]}
     if mountpoint -q "$point"; then

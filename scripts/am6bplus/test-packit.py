@@ -54,6 +54,69 @@ am6_cleanup_owned || exit 1
         self.assertEqual(result.stdout.splitlines(), ['UNMOUNT -- /tmp/mock-root',
                          'UNMOUNT -- /tmp/mock-boot', 'LOOP --detach /dev/loop987'])
 
+    def run_cleanup_from_owned_root(self, fail_first_unmount=False):
+        with tempfile.TemporaryDirectory() as folder:
+            work = Path(folder) / 'work'
+            temporary = work / 'tmp.fixture'
+            (temporary / 'tgt_root/nested').mkdir(parents=True)
+            (temporary / 'tgt_boot').mkdir()
+            script = r'''
+source "$1"
+WORK_DIR=$2
+TEMP_DIR=$WORK_DIR/tmp.fixture
+TGT_ROOT=$TEMP_DIR/tgt_root
+TGT_BOOT=$TEMP_DIR/tgt_boot
+AM6_OWNED_LOOP=/dev/loop987
+AM6_OWNED_IMAGE=$WORK_DIR/mock-image.img
+AM6_OWNED_MOUNTS=("$TGT_BOOT" "$TGT_ROOT")
+root_mounted=1
+boot_mounted=1
+failed_once=0
+mountpoint() {
+  if [[ $2 == "$TGT_ROOT" ]]; then (( root_mounted )); else (( boot_mounted )); fi
+}
+findmnt() { case "$*" in *tgt_boot*) echo /dev/loop987p1;; *) echo /dev/loop987p2;; esac; }
+am6_assert_device() { return 0; }
+umount() {
+  # Simulate the kernel refusing to unmount a filesystem containing our cwd.
+  [[ $PWD != "$2" && $PWD != "$2/"* ]] || { echo CWD_BUSY >&2; return 1; }
+  if [[ $2 == "$TGT_ROOT" && $FAIL_FIRST == 1 && $failed_once == 0 ]]; then
+    failed_once=1
+    echo TRANSIENT_BUSY >&2
+    return 1
+  fi
+  if [[ $2 == "$TGT_ROOT" ]]; then root_mounted=0; else boot_mounted=0; fi
+  printf 'UNMOUNT %s\n' "${2##*/}"
+}
+losetup() { printf 'LOOP %s\n' "$*"; }
+FAIL_FIRST=$3
+trap 'am6_exit_cleanup $?' EXIT
+cd "$TGT_ROOT/nested" || exit 98
+am6_cleanup_owned || exit 42
+[[ $PWD == "$WORK_DIR" && -z $AM6_OWNED_LOOP && ${#AM6_OWNED_MOUNTS[@]} == 0 ]] || exit 97
+# A second call and the EXIT trap must not unmount or detach again.
+am6_cleanup_owned || exit 96
+'''
+            return subprocess.run(['bash', '-c', script, 'test',
+                                   str(HERE / 'packit-runtime.sh'), str(work),
+                                   '1' if fail_first_unmount else '0'],
+                                  capture_output=True, text=True)
+
+    def test_cleanup_leaves_owned_root_before_unmount_and_is_idempotent(self):
+        result = self.run_cleanup_from_owned_root()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn('CWD_BUSY', result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ['UNMOUNT tgt_root',
+                         'UNMOUNT tgt_boot', 'LOOP --detach /dev/loop987'])
+
+    def test_exit_retry_does_not_mask_original_cleanup_failure(self):
+        result = self.run_cleanup_from_owned_root(fail_first_unmount=True)
+        self.assertEqual(result.returncode, 42, result.stderr)
+        self.assertIn('TRANSIENT_BUSY', result.stderr)
+        self.assertNotIn('CWD_BUSY', result.stderr)
+        self.assertEqual(result.stdout.splitlines(), ['UNMOUNT tgt_boot',
+                         'UNMOUNT tgt_root', 'LOOP --detach /dev/loop987'])
+
     def test_cleanup_refuses_unexpected_mount(self):
         script = r'''
 source "$1"

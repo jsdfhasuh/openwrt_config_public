@@ -30,3 +30,14 @@ The earlier local prototype used a self-contained ext4 image writer. It was reti
 不包含源码缓存、凭据或整个构建目录；打包 Action 仍只接受成功运行的正式 artifact。
 本次修改没有更改 OpenWrt 源码、包集合、固定版本、打包安全限制或超时。
 修复后的全量构建及实际打包须以新 run 终态为准。
+
+
+## 首次真实 packit 运行（2026-10-12）
+
+修复后 rootfs 运行 38211993749 已成功，提交 93ceb425369e1a80001ad88b1228069cc89d859f。
+自动打包运行 38237252335 已完成真实 FAT32/Btrfs 创建、rootfs/kernel 释放、
+AM6 DTB 配置、后验与快照；最终因脚本自身当前目录仍在 tgt_root 中，卸载返回 busy。
+首败 artifact 11741736582，ZIP SHA256
+`8c0dd640ce4dfba3ddce657901ddcb39fa6feb376467f86f9d7b7d743d5583eb`。
+修复将离开工作挂载目录提前到 owned mount 卸载前；仍拒绝外来挂载，不强制卸载、不杀进程。
+复用已成功的 rootfs，只重新打包；修复后实际结果以新的打包 run 为准。

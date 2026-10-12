@@ -1,6 +1,11 @@
 name: AM6B Plus - Package SD with pinned unifreq packit
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/openwrt_am6bplus_packit.yml"
+      - "scripts/am6bplus/**"
   workflow_dispatch:
     inputs:
       rootfs_run_id:
@@ -17,13 +22,14 @@ permissions:
   actions: read
 
 concurrency:
-  group: am6bplus-pack-${{ inputs.rootfs_run_id || github.event.workflow_run.id }}
+  group: am6bplus-pack-${{ inputs.rootfs_run_id || github.event.workflow_run.id || github.run_id }}
   cancel-in-progress: false
 
 jobs:
   package:
     if: >-
       github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'push' && contains(github.event.head_commit.message, '[pack-am6bplus:')) ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.head_repository.full_name == github.repository &&
        github.event.workflow_run.event != 'pull_request')
@@ -43,8 +49,20 @@ jobs:
         id: source
         env:
           GH_TOKEN: ${{ github.token }}
+          PUSH_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" == push ]]; then
+            REQUESTED_RUN_ID=$(python3 - <<'PYID'
+          import os, re
+          matches = re.findall(r'\[pack-am6bplus:([0-9]+)\]', os.environ['PUSH_MESSAGE'])
+          assert len(matches) == 1, 'Require exactly one explicit numeric packaging run marker'
+          print(matches[0])
+          PYID
+            )
+            export REQUESTED_RUN_ID
+            printf 'REQUESTED_RUN_ID=%s\n' "$REQUESTED_RUN_ID" >> "$GITHUB_ENV"
+          fi
           [[ "$REQUESTED_RUN_ID" =~ ^[0-9]+$ ]] || { echo 'A numeric exact rootfs run ID is required.'; exit 1; }
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$REQUESTED_RUN_ID" > "$RUNNER_TEMP/am6-rootfs-run.json"
           python3 - <<'PY'
@@ -63,10 +81,10 @@ jobs:
               out.write(f"sha={r['head_sha']}\n")
               out.write(f"artifact=am6bplus-rootfs-{r['id']}-{r['run_attempt']}\n")
           PY
-      - name: Checkout the configuration that produced this rootfs
+      - name: Checkout this trusted packaging revision (rootfs identity remains separate)
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ steps.source.outputs.sha }}
+          ref: ${{ github.sha }}
           persist-credentials: false
       - name: Download only the exact source-run artifact and verify identity
         env:
@@ -76,7 +94,8 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p "$OUTPUT_DIR/logs"
-          [[ "$(git rev-parse HEAD)" == "$EXPECTED_CONFIGURATION_SHA" ]]
+          [[ "$(git rev-parse HEAD)" == "$GITHUB_SHA" ]]
+          printf '%s\n' "$GITHUB_SHA" > "$OUTPUT_DIR/packaging-commit.txt"
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$REQUESTED_RUN_ID/artifacts?per_page=100" > "$RUNNER_TEMP/am6-artifacts.json"
           python3 - <<'PY'
           import json, os
@@ -119,6 +138,7 @@ jobs:
       - name: Verify and collect the upstream image
         env:
           EXPECTED_CONFIGURATION_SHA: ${{ steps.source.outputs.sha }}
+          PACKAGING_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
           python3 scripts/am6bplus/collect-packit.py "$PACKIT_DIR" "$OUTPUT_DIR"
@@ -131,6 +151,7 @@ jobs:
           mkdir -p "$OUTPUT_DIR"
           printf 'Packaging outcome: %s\nAM6B Plus hardware validation: NOT_RUN\n' "$PACK_OUTCOME" > "$OUTPUT_DIR/STATUS.txt"
           if [[ -f "$PACKIT_DIR/am6bplus-patch-manifest.json" ]]; then cp "$PACKIT_DIR/am6bplus-patch-manifest.json" "$OUTPUT_DIR/"; fi
+          if [[ -f "$PACKIT_DIR/output/packaging-manifest.json" ]]; then cp "$PACKIT_DIR/output/packaging-manifest.json" "$OUTPUT_DIR/rootfs-postflight.json"; fi
           cd "$OUTPUT_DIR"
           hash_file=$(mktemp "$RUNNER_TEMP/am6-pack-hashes.XXXXXXXX")
           find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 -r sha256sum > "$hash_file"

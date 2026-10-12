@@ -51,6 +51,7 @@ def main(packit, output):
     source_artifact = json.loads((output / 'source-artifact.json').read_text())
     manifest = {'schema': 1, 'kind': 'am6bplus-upstream-packit-sd',
                 'configuration_sha': os.environ['EXPECTED_CONFIGURATION_SHA'],
+                'packaging_sha': os.environ['PACKAGING_SHA'],
                 'parent_run_id': source_run['id'], 'parent_run_attempt': source_run['run_attempt'],
                 'parent_artifact_id': source_artifact['id'], 'parent_artifact_digest': source_artifact.get('digest'),
                 'pack_run_id': int(os.environ['GITHUB_RUN_ID']), 'pack_run_attempt': int(os.environ['GITHUB_RUN_ATTEMPT']),

@@ -16,7 +16,7 @@
 - 第一条 artifact 名为 `am6bplus-rootfs-运行ID-尝试次数`；第二条为 `am6bplus-packit-运行ID-尝试次数`。镜像、日志、完整配置、来源、补丁和 SHA256 都随产物保留 14 天，不自动发 Release。
 - 失败不自动重编到绿，日志会尽可能保留。云 runner 空间不足会停止，不清空其他目录。
 
-第二条校验 source workflow、仓库、main、事件、成功终态、run ID、attempt、head SHA、artifact ID、rootfs/config/锁文件摘要。然后检出产生该 rootfs 的配置提交，避免把其他运行或版本的产物混用。
+第二条校验 source workflow、仓库、main、事件、成功终态、run ID、attempt、head SHA、artifact ID、rootfs/config/锁文件摘要。打包脚本检出本次工作流的可信 main 提交；rootfs 原提交与打包提交分别记录，源锁文件必须一致，避免把其他运行或版本的产物混用。
 
 ## 配置以当前 x86 应用需求为准
 
@@ -57,3 +57,12 @@
 OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、ttyd 初始禁止自启动，先配置后启用。不自动迁移旧密码、订阅、网络或防火墙。
 
 构建成功只证明产物生成；不能代替真实盒子的启动、网络、温控、Wi-Fi、容器、应用和恢复测试。硬件测试目前 NOT_RUN。构建/打包真实结果以本次 GitHub Actions 与产物 STATUS/manifest 为准，不能把早期静态测试当作完整编译通过。
+
+
+### 只修复打包而复用成功 rootfs
+
+打包 Action 使用本次可信 main 工作流提交中的打包代码，源 rootfs 仍固定到输入的
+成功 run/attempt/artifact/原配置 SHA；两个提交号分别记录，源锁文件必须一致。
+手动运行打包 Action 并输入成功 rootfs 的 run ID，无需重编所有软件。
+也支持 main 上涉及打包脚本的提交中显式写入 `[pack-am6bplus:数字runID]`，
+触发一次只打包运行。普通 push 不打包；失败、PR、外部仓库或非 main rootfs 拒绝。
