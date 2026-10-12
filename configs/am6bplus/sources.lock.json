@@ -1,0 +1,59 @@
+{
+  "openwrt": {
+    "url": "https://github.com/openwrt/openwrt.git",
+    "commit": "f0a60eee2fe051741c643ea6118718aae1ef17fb",
+    "version": "25.12.5"
+  },
+  "feeds": {
+    "packages": {
+      "url": "https://github.com/openwrt/packages.git",
+      "commit": "5caa62e0bc9f7fb9b0c12a23267bceb7724214dd"
+    },
+    "luci": {
+      "url": "https://github.com/openwrt/luci.git",
+      "commit": "128a7812f4be233c5dd7f7466f534fd888785caf"
+    },
+    "routing": {
+      "url": "https://github.com/openwrt/routing.git",
+      "commit": "3d7d0dc7fa43d3eb09498417407e95a6552e5312"
+    },
+    "telephony": {
+      "url": "https://github.com/openwrt/telephony.git",
+      "commit": "2618106d5846a4a542fdf5809f0d3ed228ce439b"
+    },
+    "video": {
+      "url": "https://github.com/openwrt/video.git",
+      "commit": "094bf58da6682f895255a35a84349a79dab4bf95"
+    }
+  },
+  "plugins": {
+    "ddnsgo": {
+      "url": "https://github.com/sirpdboy/luci-app-ddns-go.git",
+      "commit": "7092e6de6ad9fe3f7d327f70468dfd19e00d6f0e"
+    },
+    "mosdns": {
+      "url": "https://github.com/sbwml/luci-app-mosdns.git",
+      "commit": "bd40245303cd0ba56804d49eed5dbc4be2a082ca"
+    },
+    "openclash": {
+      "url": "https://github.com/vernesong/OpenClash.git",
+      "commit": "e553e82e01c697aefbe1555261a503f425e00ccd"
+    },
+    "luci-theme-argon": {
+      "url": "https://github.com/jerrykuku/luci-theme-argon.git",
+      "commit": "ee60fd61a6c5fa7a240fcd69dbb66f1651b27d9f"
+    },
+    "luci-app-argon-config": {
+      "url": "https://github.com/jerrykuku/luci-app-argon-config.git",
+      "commit": "3f844c467ce5075e2b0dd61ebf7271640eb08da2"
+    }
+  },
+  "mihomo": {
+    "version": "1.19.32",
+    "url": "https://github.com/MetaCubeX/mihomo/releases/download/v1.19.32/mihomo-linux-arm64-v1.19.32.gz",
+    "sha256": "9dd862e28b46ff7d775f169cceebc28deccaa0a9e804237d421cd2571e0caba0"
+  },
+  "reference_config_sha256": "6ae339e71b994b6b63d1c8b25b1cc8888be0deedb1183a202aafdd2c09e4b0ca",
+  "configuration_repository_commit": "a475f7a2214da748ca229fcd4bb9fb6a81a32964",
+  "current_x86_config_sha256": "0dc97d319d6bc9097be4b9be5778029fb148cc4d359ba7f2f2b74a3436f0f7a6"
+}

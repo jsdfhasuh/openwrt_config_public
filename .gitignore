@@ -1,0 +1,6 @@
+.am6bplus-openwrt/
+.am6bplus-assets/
+am6bplus-output/
+__pycache__/
+.am6bplus-input/
+.am6bplus-packit/

@@ -1,0 +1,146 @@
+name: AM6B Plus - Package SD with pinned unifreq packit
+
+on:
+  workflow_dispatch:
+    inputs:
+      rootfs_run_id:
+        description: 'Successful main-branch ARM64 rootfs workflow run ID (not latest)'
+        required: true
+        type: string
+  workflow_run:
+    workflows: ['AM6B Plus - Build ARM64 rootfs 25.12.5']
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: am6bplus-pack-${{ inputs.rootfs_run_id || github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.event != 'pull_request')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      REQUESTED_RUN_ID: ${{ inputs.rootfs_run_id || github.event.workflow_run.id }}
+      INPUT_DIR: ${{ github.workspace }}/.am6bplus-input
+      ASSET_DIR: ${{ github.workspace }}/.am6bplus-assets
+      PACKIT_DIR: ${{ github.workspace }}/.am6bplus-packit
+      OUTPUT_DIR: ${{ github.workspace }}/am6bplus-output
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Resolve and validate the exact successful source run
+        id: source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          [[ "$REQUESTED_RUN_ID" =~ ^[0-9]+$ ]] || { echo 'A numeric exact rootfs run ID is required.'; exit 1; }
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$REQUESTED_RUN_ID" > "$RUNNER_TEMP/am6-rootfs-run.json"
+          python3 - <<'PY'
+          import json, os, re
+          p = os.path.join(os.environ['RUNNER_TEMP'], 'am6-rootfs-run.json')
+          r = json.load(open(p))
+          assert str(r['id']) == os.environ['REQUESTED_RUN_ID']
+          assert r['repository']['full_name'] == os.environ['GITHUB_REPOSITORY']
+          assert r['head_repository']['full_name'] == os.environ['GITHUB_REPOSITORY']
+          assert r['head_branch'] == 'main' and r['event'] in ('push', 'workflow_dispatch')
+          assert r['status'] == 'completed' and r['conclusion'] == 'success'
+          assert r['name'] == 'AM6B Plus - Build ARM64 rootfs 25.12.5'
+          assert r['path'] == '.github/workflows/openwrt_am6bplus_25_12.yml'
+          assert re.fullmatch('[0-9a-f]{40}', r['head_sha'])
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as out:
+              out.write(f"sha={r['head_sha']}\n")
+              out.write(f"artifact=am6bplus-rootfs-{r['id']}-{r['run_attempt']}\n")
+          PY
+      - name: Checkout the configuration that produced this rootfs
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ steps.source.outputs.sha }}
+          persist-credentials: false
+      - name: Download only the exact source-run artifact and verify identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_NAME: ${{ steps.source.outputs.artifact }}
+          EXPECTED_CONFIGURATION_SHA: ${{ steps.source.outputs.sha }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUTPUT_DIR/logs"
+          [[ "$(git rev-parse HEAD)" == "$EXPECTED_CONFIGURATION_SHA" ]]
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$REQUESTED_RUN_ID/artifacts?per_page=100" > "$RUNNER_TEMP/am6-artifacts.json"
+          python3 - <<'PY'
+          import json, os
+          d = json.load(open(os.path.join(os.environ['RUNNER_TEMP'], 'am6-artifacts.json')))
+          a = [x for x in d['artifacts'] if x['name'] == os.environ['ARTIFACT_NAME'] and not x['expired']]
+          assert len(a) == 1, 'Expected exactly one non-expired artifact for this run attempt'
+          json.dump(a[0], open(os.path.join(os.environ['OUTPUT_DIR'], 'source-artifact.json'), 'w'), indent=2)
+          PY
+          gh run download "$REQUESTED_RUN_ID" --repo "$GITHUB_REPOSITORY" --name "$ARTIFACT_NAME" --dir "$INPUT_DIR"
+          python3 scripts/am6bplus/build-artifact.py verify "$INPUT_DIR" "$RUNNER_TEMP/am6-rootfs-run.json"
+          cp "$RUNNER_TEMP/am6-rootfs-run.json" "$OUTPUT_DIR/source-run.json"
+          cp "$INPUT_DIR/build-manifest.json" "$INPUT_DIR/openwrt.config" "$INPUT_DIR/sources.lock.json" "$OUTPUT_DIR/"
+      - name: Install upstream packing prerequisites
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends btrfs-progs dosfstools e2fsprogs \
+            fdisk util-linux parted gawk uuid-runtime kmod xz-utils zstd gzip tar \
+            python3 perl curl ca-certificates git rsync bc coreutils
+      - name: Fetch checksum-locked assets and fixed upstream packit
+        run: |
+          set -euo pipefail
+          python3 scripts/am6bplus/download-assets.py "$ASSET_DIR" 2>&1 | tee "$OUTPUT_DIR/logs/assets.log"
+          git init "$PACKIT_DIR"
+          git -C "$PACKIT_DIR" remote add origin https://github.com/unifreq/openwrt_packit.git
+          git -C "$PACKIT_DIR" fetch --depth 1 origin a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c
+          git -C "$PACKIT_DIR" checkout --detach FETCH_HEAD
+          [[ "$(git -C "$PACKIT_DIR" rev-parse HEAD)" == a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c ]]
+          python3 scripts/am6bplus/prepare-packit.py "$PACKIT_DIR" \
+            "$INPUT_DIR/openwrt-armsr-armv8-generic-rootfs.tar.gz" "$ASSET_DIR" \
+            2>&1 | tee "$OUTPUT_DIR/logs/prepare-packit.log"
+          git -C "$PACKIT_DIR" diff --binary > "$OUTPUT_DIR/upstream-sd-only.patch"
+      - name: Actually run the adapted upstream S922X entry
+        run: |
+          set -euo pipefail
+          cd "$PACKIT_DIR"
+          sudo --preserve-env=GITHUB_ACTIONS,RUNNER_ENVIRONMENT,GITHUB_WORKSPACE \
+            env AM6BPLUS_GITHUB_RUNNER=1 bash ./mk_s922x_am6bplus.sh \
+            2>&1 | tee "$OUTPUT_DIR/logs/packit.log"
+      - name: Verify and collect the upstream image
+        env:
+          EXPECTED_CONFIGURATION_SHA: ${{ steps.source.outputs.sha }}
+        run: |
+          set -euo pipefail
+          python3 scripts/am6bplus/collect-packit.py "$PACKIT_DIR" "$OUTPUT_DIR"
+      - name: Retain diagnostics and hashes on success or failure
+        if: always()
+        env:
+          PACK_OUTCOME: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$OUTPUT_DIR"
+          printf 'Packaging outcome: %s\nAM6B Plus hardware validation: NOT_RUN\n' "$PACK_OUTCOME" > "$OUTPUT_DIR/STATUS.txt"
+          if [[ -f "$PACKIT_DIR/am6bplus-patch-manifest.json" ]]; then cp "$PACKIT_DIR/am6bplus-patch-manifest.json" "$OUTPUT_DIR/"; fi
+          cd "$OUTPUT_DIR"
+          hash_file=$(mktemp "$RUNNER_TEMP/am6-pack-hashes.XXXXXXXX")
+          find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 -r sha256sum > "$hash_file"
+          mv "$hash_file" SHA256SUMS
+      - name: Upload SD image and diagnostic evidence (no Release)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: am6bplus-packit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: am6bplus-output/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0

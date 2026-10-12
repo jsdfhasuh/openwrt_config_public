@@ -1,0 +1,77 @@
+{
+  "schema": 1,
+  "packit_commit": "a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c",
+  "kernel_release": "6.6.124-flippy-94+",
+  "dtb": "meson-g12b-ugoos-am6.dtb",
+  "model_evidence": "https://github.com/unifreq/openwrt_packit/blob/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/amlogic_model_database.txt#L53",
+  "experimental": true,
+  "assets": [
+    {
+      "name": "aml_autoscript",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/bootfiles/amlogic/aml_autoscript",
+      "sha256": "8410022cf2f8c6a64df490d1f489915bbd019dad99730d8b09852661ce7e6e91"
+    },
+    {
+      "name": "aml_autoscript.cmd",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/bootfiles/amlogic/aml_autoscript.cmd",
+      "sha256": "2247da19713846aa4c33338c3ca28a0ce4c93eed2866f82c680f03bd0303699f"
+    },
+    {
+      "name": "s905_autoscript",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/bootfiles/amlogic/s905_autoscript",
+      "sha256": "61fd96c0eb9913b3eb376c3805a2cda58e55fba69fae9bb8ff794b96daebc7c1"
+    },
+    {
+      "name": "s905_autoscript.cmd",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/bootfiles/amlogic/s905_autoscript.cmd",
+      "sha256": "ed689a973d32a461f31e9a62cbdde5043c062652c5beb7924839d93da4430627"
+    },
+    {
+      "name": "boot.scr",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/bootfiles/amlogic/boot.scr",
+      "sha256": "671a2c71c2ec764dcfb1dcab4fea053b66a7bbd8e6343146b6fb62da51770051"
+    },
+    {
+      "name": "boot.cmd",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/bootfiles/amlogic/boot.cmd",
+      "sha256": "e9c6a8f98f30d96ede23f5a82db34e03893940cf9a73e1ed89cb21483ee12814"
+    },
+    {
+      "name": "u-boot.ext",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/meson_btld/without_fip/u-boot-gtkingpro.bin",
+      "sha256": "215f2f3abbd03f19a7b304f5dd7824914a16d9bdecb0711845a8c2fa7e292483"
+    },
+    {
+      "name": "firmware_armbian.tar.xz",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/firmware_armbian.tar.xz",
+      "sha256": "4f666bb074620febf66561eff3cac6797c8ced7cf67ca6d682cf2edb621317cf"
+    },
+    {
+      "name": "kmod",
+      "url": "https://raw.githubusercontent.com/unifreq/openwrt_packit/a46b4f5d201ab99eba0ddc7c2e7cd67412fc3d5c/files/kmod",
+      "sha256": "f437f0e3f297d3f72b03e07bc3e0efca8d906c6deef0b5a5cf8022bb3600e5ea"
+    },
+    {
+      "name": "kernel.tar.gz",
+      "url": "https://github.com/ophub/kernel/releases/download/kernel_flippy/6.6.124.tar.gz",
+      "sha256": "1f5bc7a82c553e21831e04687768e69305276d0fc6839da59d689a9ac4eec60b"
+    }
+  ],
+  "kernel_members": [
+    {
+      "name": "boot-6.6.124-flippy-94+.tar.gz",
+      "member": "6.6.124/boot-6.6.124-flippy-94+.tar.gz",
+      "sha256": "21028af80ba8125f947ea642d225eac868f4f7aa9fe730457bbf2fd041e19add"
+    },
+    {
+      "name": "modules-6.6.124-flippy-94+.tar.gz",
+      "member": "6.6.124/modules-6.6.124-flippy-94+.tar.gz",
+      "sha256": "94d845c40ab4e18fedfdca578cc84b22dfd34985ebcd804333caaac02cb5a39a"
+    },
+    {
+      "name": "dtb-amlogic-6.6.124-flippy-94+.tar.gz",
+      "member": "6.6.124/dtb-amlogic-6.6.124-flippy-94+.tar.gz",
+      "sha256": "84de87e79db935a1853e258a0c1e96e4fe9951f7c6eb9af89479cd2d88f3cd82"
+    }
+  ]
+}

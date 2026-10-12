@@ -1,0 +1,473 @@
+x86_selected_package,arm_action,reason
+apk-mbedtls,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+attendedsysupgrade-common,not-explicitly-selected,Generic x86 flashing/update path is unsafe for this experimental SD target
+base-files,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+busybox,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ca-bundle,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ca-certificates,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+dnsmasq-full,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+dnsmasq_full_dhcp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_dhcpv6,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_dnssec,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_auth,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_nftset,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_conntrack,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_noid,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dnsmasq_full_tftp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+dropbear,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+firewall4,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+fstools,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+fwtool,not-explicitly-selected,Generic x86 flashing/update path is unsafe for this experimental SD target
+getrandom,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+jsonfilter,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libatomic,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libc,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libgcc,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libpthread,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+librt,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+logd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+mtd,not-explicitly-selected,Generic x86 flashing/update path is unsafe for this experimental SD target
+netifd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+openwrt-keyring,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+procd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+procd-seccomp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+procd-ujail,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+resolveip,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd-mod-file,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd-mod-iwinfo,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd-mod-rpcsys,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd-mod-ucode,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ubox,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ubus,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ubusd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+uci,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+urandom-seed,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+urngd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+usign,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+wifi-scripts,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+htop,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+grub2,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+grub2-efi,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+libiwinfo-data,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+bnx2-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+i915-firmware-dmc,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+mt7601u-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+r8169-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+rtl8192cu-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+wireless-regdb,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+kmod-crypto-acompress,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-aead,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-blake2b,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-ccm,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-cmac,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-crc32c,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-ctr,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-gcm,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-geniv,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-gf128,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-ghash,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-hash,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-hmac,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-kpp,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-lib-chacha20,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-lib-chacha20poly1305,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-lib-curve25519,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-lib-poly1305,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-manager,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-null,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-rng,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-seqiv,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-sha3,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-sha512,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-crypto-xxhash,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fs-btrfs,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fs-vfat,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-hwmon-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-i2c-algo-bit,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-i2c-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-input-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-crc-ccitt,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-crc32c,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-lzo,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-raid6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-xor,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-xxhash,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-zlib-deflate,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-zlib-inflate,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-lib-zstd,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nls-base,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nls-cp437,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nls-iso8859-1,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nls-utf8,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-br-netfilter,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ip6tables,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ipt-conntrack,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ipt-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ipt-extra,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ipt-nat,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ipt-nat6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ipt-physdev,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-conntrack,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-conntrack-netlink,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-flow,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-ipt,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-ipt6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-ipvs,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-log,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-log6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-nat,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-nat6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-reject,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nf-reject6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nfnetlink,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nft-compat,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nft-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nft-fib,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nft-nat,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-nft-offload,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-amazon-ena,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-amd-xgbe,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-bnx2,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-dwmac-intel,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-e1000,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-e1000e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-forcedeth,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-igb,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-igc,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ixgbe,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-libphy,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mdio-devres,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mii,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-pcs-xpcs,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-phy-realtek,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-phylink,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-r8169,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-stmmac-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-tg3,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mdio,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ppp,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-pppoe,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-pppox,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-slhc,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-tcp-bbr,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-tun,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+kmod-udptunnel4,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-udptunnel6,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-veth,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-wireguard,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-button-hotplug,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-dma-buf,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mmc,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-pps,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ptp,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-thermal,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-usb-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-usb-ehci,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-usb-xhci-hcd,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-usb2,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-usb3,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-acpi-video,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-backlight,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-buddy,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-display-helper,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-exec,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-i915,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-kms-helper,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-suballoc-helper,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-ttm,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-drm-ttm-helper,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fb,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fb-cfb-copyarea,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fb-cfb-fillrect,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fb-cfb-imgblt,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fb-sys-fops,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-fb-sys-ram,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ath,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+ATH_DFS,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+kmod-ath6kl,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-ath6kl-usb,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-cfg80211,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mac80211,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+MAC80211_DEBUGFS,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+MAC80211_MESH,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+kmod-mt76,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76-connac,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76-core,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76-sdio,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76-usb,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7601u,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7603,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7615-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7615-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7615e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7622-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7663-firmware-ap,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7663-firmware-sta,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7663-usb-sdio,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7663s,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7663u,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x0-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x02-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x02-usb,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x0e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x0u,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x2,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x2-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt76x2u,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7915-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7915e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7916-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7921-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7921-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7921e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7921s,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7921u,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7922-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7925-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7925-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7925e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7925u,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt792x-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt792x-usb,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7992-23-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7992-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7996-233-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7996-firmware,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7996-firmware-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-mt7996e,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+kmod-usb-common,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+lua,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libpython3,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+python3,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-asyncio,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-base,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-codecs,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-ctypes,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-dbm,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-decimal,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-email,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-light,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-logging,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-lzma,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-multiprocessing,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-ncurses,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-openssl,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-pydoc,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-readline,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-sqlite3,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-unittest,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-urllib,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-uuid,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+python3-xml,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+ruby,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-bigdecimal,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-date,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-digest,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-enc,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-pstore,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-psych,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-stringio,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ruby-yaml,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-digest,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-fs,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-log,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-math,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-nl80211,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-rtnl,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-ubus,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-uci,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-uloop,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libbz2,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liblzma,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libsqlite3,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libattr,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libiptext,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libiptext-nft,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libiptext6,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libxtables,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libyaml,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libgnutls,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libmbedtls,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libopenssl,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+jansson,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libavahi-client,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libavahi-dbus-support,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libblkid,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libblobmsg-json,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libbpf,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libcap,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libcap-ng,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libcomerr,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libcurl,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libdaemon,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libdbus,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libe2p,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libelf,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libevdev,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libexpat,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libext2fs,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libf2fs,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libffi,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libgdbm,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libgmp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libiperf3,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libiwinfo,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libjson-c,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liblua,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liblucihttp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liblucihttp-lua,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liblucihttp-ucode,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liblzo,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libmnl,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libmount,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libncurses,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libnetfilter-conntrack,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libnettle,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libnfnetlink,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libnftnl,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libnghttp2,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libnl-tiny,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libpcap,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libpcre2,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libpopt,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libreadline,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libruby,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libseccomp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libsmartcols,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libss,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libtasn1,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libtirpc,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libubox,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libubus,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libubus-lua,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libuci,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libuclient,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libucode,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libudebug,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libudev-zero,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+liburing,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libusb-1.0,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libustream-mbedtls,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libuuid,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libuv,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libwebsockets-full,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd-mod-luci,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+rpcd-mod-rrdns,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+terminfo,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+zlib,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-light,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-base,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-compat,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-lua-runtime,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-mod-admin-full,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-mod-dashboard,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-mod-network,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-mod-status,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-mod-system,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-app-argon-config,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-attendedsysupgrade,not-explicitly-selected,Generic x86 flashing/update path is unsafe for this experimental SD target
+luci-app-banip,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-commands,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-ddns-go,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-firewall,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-mosdns,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-openclash,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+iptables-mod-extra,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-package-manager,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-samba4,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-ttyd,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-app-upnp,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-theme-argon,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-theme-bootstrap,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-theme-material,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-theme-openwrt,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-proto-ipv6,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-proto-ppp,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-proto-wireguard,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+luci-lib-base,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-lib-ip,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-lib-jsonc,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-lib-nixio,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-lib-uqr,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-argon-config-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-attendedsysupgrade-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-banip-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-base-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-commands-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-dashboard-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-ddns-go-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-firewall-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-mosdns-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-package-manager-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-samba4-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-ttyd-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+luci-i18n-upnp-zh-cn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+curl,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+wget-ssl,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+ip6tables-nft,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+iptables-nft,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+miniupnpd-nftables,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+nftables-json,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+xtables-nft,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+avahi-dbus-daemon,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+knot-resolver_dnstap,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+mosdns,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+v2ray-geoip,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+v2ray-geosite,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+wsdd2,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+ip-full,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+openssh-sftp-server,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+wireguard-tools,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+cgi-io,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ddns-go,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+uhttpd,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+uhttpd-mod-ubus,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+hostapd-common,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+wpad,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+adguardhome,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+banip,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+darkstat,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+etherwake,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+iftop,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+iperf3,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+iw,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+odhcp6c,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+odhcpd-ipv6only,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ppp,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ppp-mod-pppoe,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+samba4-libs,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+samba4-server,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+uclient-fetch,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+grub2-bios-setup,not-copied,Hardware/kernel specific; matched external kernel tuple used instead
+unzip,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+partx-utils,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+attr,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+btrfs-progs,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+e2fsprogs,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+mkf2fs,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+bash,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+ttyd,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+containerd,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+dbus,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+gawk,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+iwinfo,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+jshn,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+libjson-script,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+runc,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+TAR_POSIX_ACL,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+TAR_XATTR,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+TAR_BZIP2,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+TAR_GZIP,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+TAR_XZ,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+TAR_ZSTD,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+tini,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-html,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+ucode-mod-lua,dependency-recomputed,"Not treated as separate user application; ARM64 dependencies/defaults resolved by Kconfig, see final .config"
+usb-modeswitch,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+usbids,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+usbutils,explicitly-retained,Current x86 user application/tool; resolved again for ARM64
+v2dat,dependency-migrated,Pinned current mosdns uses geo2txt; v2dat is not present in official pinned feed
