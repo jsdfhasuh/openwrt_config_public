@@ -12,15 +12,19 @@ MODULES = '''meson_gxl stmmac stmmac_platform dwmac_meson8b
 phy_meson_g12a_usb2 phy_meson_g12a_usb3_pcie xhci_hcd xhci_plat_hcd dwc3 dwc3_meson_g12a
 br_netfilter bridge veth tun nf_tables nft_chain_nat nft_masq nft_redir nft_reject_inet
 nft_fib_inet nft_ct nft_tproxy nft_socket inet_diag xt_TPROXY ip_tables iptable_filter
-iptable_nat xt_MASQUERADE xt_addrtype xt_conntrack'''.split()
+iptable_nat xt_MASQUERADE xt_addrtype xt_conntrack
+ip6_tables ip6table_filter ip6table_nat xt_nat xt_physdev ip_vs ip_vs_rr xt_ipvs'''.split()
 REQUIRED_BUILTIN = '''CGROUPS MEMCG CGROUP_PIDS CGROUP_DEVICE CGROUP_CPUACCT
 CFS_BANDWIDTH USER_NS POSIX_MQUEUE NAMESPACES NET_NS PID_NS IPC_NS UTS_NS
-SECCOMP SECCOMP_FILTER OVERLAY_FS BTRFS_FS'''.split()
+SECCOMP SECCOMP_FILTER OVERLAY_FS BTRFS_FS
+CPUSETS BLK_CGROUP CGROUP_FREEZER CGROUP_SCHED CGROUP_BPF BPF_SYSCALL'''.split()
 REQUIRED = '''VETH BRIDGE BRIDGE_NETFILTER TUN NF_CONNTRACK NF_NAT NF_TABLES
 NFT_CT NFT_MASQ NFT_REDIR NFT_REJECT NFT_REJECT_INET NFT_FIB_INET NFT_LOG NFT_NAT
 NFT_TPROXY NFT_SOCKET INET_DIAG NETFILTER_XT_TARGET_TPROXY IP_NF_IPTABLES
 IP_NF_FILTER IP_NF_NAT IP6_NF_IPTABLES NETFILTER_XT_MATCH_ADDRTYPE
-NETFILTER_XT_MATCH_CONNTRACK NETFILTER_XT_TARGET_MASQUERADE'''.split()
+NETFILTER_XT_MATCH_CONNTRACK NETFILTER_XT_TARGET_MASQUERADE
+IP6_NF_FILTER IP6_NF_NAT NETFILTER_XT_NAT NETFILTER_XT_MATCH_PHYSDEV
+IP_VS IP_VS_IPV6 IP_VS_RR NETFILTER_XT_MATCH_IPVS'''.split()
 
 
 def require(condition, message):
@@ -83,6 +87,14 @@ def main():
         path = root / 'sbin' / name
         path.unlink(missing_ok=True)
         path.symlink_to('kmod')
+    # Do not let Docker alter the network or fill the small root partition on boot.
+    # Remove only these services' own rc.d links; users opt in after SD expansion.
+    for service in ['dockerd', 'containerd']:
+        for link in (root / 'etc/rc.d').glob('*' + service):
+            require(link.is_symlink(), f'Unexpected non-symlink service entry: {link}')
+            require(os.readlink(link) in [f'../init.d/{service}', f'/etc/init.d/{service}'],
+                    f'Unexpected service link target: {link}')
+            link.unlink()
     # These programs must not enter an experimental SD-only artifact.
     for relative in ['etc/first_run.sh', 'etc/part_size', 'root/install-to-emmc.sh',
                      'usr/sbin/openwrt-install-amlogic', 'usr/sbin/openwrt-update-amlogic',

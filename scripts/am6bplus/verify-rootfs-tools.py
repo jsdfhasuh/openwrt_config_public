@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 def verify(filename):
     with tarfile.open(filename, 'r:gz') as archive:
         entries = {m.name.removeprefix('./'): m for m in archive.getmembers()}
-        for name in ('usr/bin/pip3', 'usr/bin/python3', 'usr/bin/btrfs'):
+        for name in ('usr/bin/pip3', 'usr/bin/python3', 'usr/bin/btrfs', 'usr/bin/docker', 'usr/bin/dockerd', 'etc/init.d/dockerd'):
             if name not in entries or not (entries[name].isfile() or entries[name].issym()):
                 raise ValueError(f'Missing required tool: {name}')
         for target, source in (

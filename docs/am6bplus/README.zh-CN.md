@@ -22,7 +22,7 @@
 
 参考用户仓库 `a475f7a2214da748ca229fcd4bb9fb6a81a32964` 的 x86.config。全部 472 个选中条目的迁移处理见 `x86-package-migration.csv`。
 
-显式选择 88 个包配置：Argon 配置及主题、banIP、commands、ddns-go、firewall、mosdns、OpenClash、APK 软件包管理、Samba4、ttyd、UPnP，以及 AdGuard Home、Python3、pip3 及现选子模块、WireGuard 工具、SFTP、诊断/磁盘工具、containerd/runc 等。
+显式选择 92 个包配置：Argon 配置及主题、banIP、commands、ddns-go、firewall、mosdns、OpenClash、APK 软件包管理、Samba4、ttyd、UPnP，以及 AdGuard Home、Python3、pip3 及现选子模块、WireGuard 工具、SFTP、诊断/磁盘工具、containerd/runc 等。
 
 - nft-qos 已按用户决定舍弃；官方因多个未修问题将其删除，不盲搬旧版。
 - 当前 x86 未选的旧 ARM dockerman/mwan3/wol 页面/OpenWrt2020 主题不默认加入；etherwake 工具按当前 x86 保留。
@@ -74,3 +74,15 @@ OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、t
 手动扩容工具随新版根分区预装：`/usr/sbin/am6bplus-grow-sd`。
 说明：`/usr/share/doc/am6bplus-grow-sd/README.zh-CN.md`。没有开机自动执行钩子。
 先只读预览并备份，再按两阶段步骤操作；真实 SD 扩容未测试（NOT_RUN）。
+
+
+### Docker / Home Assistant Container
+
+新增 Docker 27.3.1 引擎、CLI、LuCI Docker 管理及中文翻译，保留 pip3 和手动扩容工具。
+打包时移除 dockerd/containerd 的自启动链接；不自动拉取 Home Assistant，不自动扩容。
+先按扩容说明完成 SD 两阶段扩容并确认容量，再手动启用 Docker；默认数据目录为 /opt/docker。
+未扩容时根分区仍为 3GiB，即使 SD 标称 128GB 也不能直接容纳长期容器/历史数据库。
+保留原 firewall4/iptables-nft；上游 dockerd 配置提示 fw4 兼容层存在限制，
+网络、防火墙与设备发现必须实机验证，不自动替换防火墙或开放端口。
+Home Assistant Container 自带 Python，不依赖宿主 pip3；没有 Supervisor/apps。
+Docker 守护进程、Home Assistant、USB/蓝牙透传及实卡扩容均尚未实机验证（NOT_RUN）。

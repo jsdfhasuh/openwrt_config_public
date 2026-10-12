@@ -13,7 +13,7 @@ spec.loader.exec_module(module)
 class TestRootfsTools(unittest.TestCase):
     def fixture(self, filename, bad_mode=False, bad_content=False, missing_pip=False):
         with tarfile.open(filename, 'w:gz') as archive:
-            for name in ['usr/bin/python3', 'usr/bin/btrfs'] + ([] if missing_pip else ['usr/bin/pip3', 'usr/lib/python3.13/site-packages/pip/__init__.py']):
+            for name in ['usr/bin/python3', 'usr/bin/btrfs', 'usr/bin/docker', 'usr/bin/dockerd', 'etc/init.d/dockerd'] + ([] if missing_pip else ['usr/bin/pip3', 'usr/lib/python3.13/site-packages/pip/__init__.py']):
                 info = tarfile.TarInfo('./' + name)
                 info.mode = 0o755
                 archive.addfile(info, io.BytesIO(b''))
