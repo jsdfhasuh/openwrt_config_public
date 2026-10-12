@@ -70,3 +70,7 @@ OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、t
 
 2026-10-12 按用户要求新增 `python3-pip`，其他包和固定源不变。
 构建完成后用最终包清单与 rootfs 中的 pip3 文件核对；旧版不含 pip 的 artifact 保留。
+
+手动扩容工具随新版根分区预装：`/usr/sbin/am6bplus-grow-sd`。
+说明：`/usr/share/doc/am6bplus-grow-sd/README.zh-CN.md`。没有开机自动执行钩子。
+先只读预览并备份，再按两阶段步骤操作；真实 SD 扩容未测试（NOT_RUN）。

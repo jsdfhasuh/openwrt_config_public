@@ -68,6 +68,13 @@ def main():
     # Dedicated overlay. No inherited credentials, disk formatting or x86 core.
     overlay = build / 'files'
     install_core(lock['mihomo'], overlay / 'etc/openclash/core/clash_meta')
+    grow = overlay / 'usr/sbin/am6bplus-grow-sd'
+    grow.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(REPO / 'scripts/am6bplus/am6bplus-grow-sd.py', grow)
+    grow.chmod(0o755)
+    doc = overlay / 'usr/share/doc/am6bplus-grow-sd/README.zh-CN.md'
+    doc.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(REPO / 'docs/am6bplus/grow-sd/README.zh-CN.md', doc)
     defaults = overlay / 'etc/uci-defaults/99-am6bplus-safe-firstboot'
     defaults.parent.mkdir(parents=True, exist_ok=True)
     defaults.write_text('''#!/bin/sh

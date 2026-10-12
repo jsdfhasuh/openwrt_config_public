@@ -83,6 +83,10 @@ jobs:
           python3 scripts/am6bplus/verify-config.py "$BUILD_DIR/.config" 2>&1 | tee "$OUTPUT_DIR/logs/verify-config.log"
           cp "$BUILD_DIR/.config" "$OUTPUT_DIR/openwrt.config"
           python3 scripts/am6bplus/build-artifact.py create "$BUILD_DIR" "$OUTPUT_DIR" 2>&1 | tee "$OUTPUT_DIR/logs/collect-artifact.log"
+      - name: Verify pip3 and opt-in SD tool inside the actual rootfs
+        run: |
+          set -euo pipefail
+          python3 scripts/am6bplus/verify-rootfs-tools.py "$OUTPUT_DIR/openwrt-armsr-armv8-generic-rootfs.tar.gz" 2>&1 | tee "$OUTPUT_DIR/logs/rootfs-tools.log"
       - name: Record outcome and checksums
         if: always()
         env:
