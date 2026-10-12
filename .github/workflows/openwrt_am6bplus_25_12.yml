@@ -80,9 +80,9 @@ jobs:
         run: |
           set -euo pipefail
           make -C "$BUILD_DIR" -j"$BUILD_JOBS" world V=s 2>&1 | tee "$OUTPUT_DIR/logs/build.log"
-          python3 scripts/am6bplus/verify-config.py "$BUILD_DIR/.config"
+          python3 scripts/am6bplus/verify-config.py "$BUILD_DIR/.config" 2>&1 | tee "$OUTPUT_DIR/logs/verify-config.log"
           cp "$BUILD_DIR/.config" "$OUTPUT_DIR/openwrt.config"
-          python3 scripts/am6bplus/build-artifact.py create "$BUILD_DIR" "$OUTPUT_DIR"
+          python3 scripts/am6bplus/build-artifact.py create "$BUILD_DIR" "$OUTPUT_DIR" 2>&1 | tee "$OUTPUT_DIR/logs/collect-artifact.log"
       - name: Record outcome and checksums
         if: always()
         env:
@@ -104,5 +104,17 @@ jobs:
           name: am6bplus-rootfs-${{ github.run_id }}-${{ github.run_attempt }}
           path: am6bplus-output/
           if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+      - name: Preserve only generated rootfs candidates for failure diagnosis
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: am6bplus-diagnostic-rootfs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            .am6bplus-openwrt/bin/targets/armsr/armv8/openwrt-armsr-armv8-generic-rootfs.tar.gz
+            .am6bplus-openwrt/bin/targets/armsr/armv8/openwrt-armsr-armv8-generic-targz-rootfs.tar.gz
+          if-no-files-found: ignore
           retention-days: 14
           compression-level: 0

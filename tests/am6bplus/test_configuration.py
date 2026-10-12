@@ -95,3 +95,36 @@ class TestArtifactIdentity(unittest.TestCase):
             with patch.dict('os.environ', {'GITHUB_REPOSITORY':repo['full_name']}):
                 with self.assertRaisesRegex(ValueError, 'main push/manual'):
                     module.verify(path, path/'run.json')
+
+
+class TestArtifactCollection(unittest.TestCase):
+    def test_two_real_openwrt_output_names_select_canonical(self):
+        module = load('build-artifact')
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            target = build / 'bin/targets/armsr/armv8'
+            target.mkdir(parents=True)
+            (target / module.ROOTFS_NAME).write_bytes(b'canonical-rootfs')
+            (target / 'openwrt-armsr-armv8-generic-targz-rootfs.tar.gz').write_bytes(b'device-image')
+            (build / '.config').write_text('CONFIG_USE_APK=y\n')
+            output = Path(directory) / 'output'
+            env = {'GITHUB_REPOSITORY': 'jsdfhasuh/openwrt_config_public',
+                   'GITHUB_SHA': 'a' * 40, 'GITHUB_WORKFLOW': module.WORKFLOW,
+                   'GITHUB_RUN_ID': '123', 'GITHUB_RUN_ATTEMPT': '1'}
+            with patch.dict('os.environ', env):
+                module.create(build, output)
+            self.assertEqual((output / module.ROOTFS_NAME).read_bytes(), b'canonical-rootfs')
+            manifest = json.loads((output / 'build-manifest.json').read_text())
+            self.assertEqual(manifest['run_id'], 123)
+            self.assertEqual(manifest['files'][module.ROOTFS_NAME]['sha256'],
+                             hashlib.sha256(b'canonical-rootfs').hexdigest())
+
+    def test_alternate_name_does_not_substitute_for_missing_canonical(self):
+        module = load('build-artifact')
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            target = build / 'bin/targets/armsr/armv8'
+            target.mkdir(parents=True)
+            (target / 'openwrt-armsr-armv8-generic-targz-rootfs.tar.gz').write_bytes(b'other')
+            with self.assertRaisesRegex(ValueError, 'Missing canonical'):
+                module.create(build, Path(directory) / 'output')

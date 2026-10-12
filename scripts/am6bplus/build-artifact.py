@@ -18,11 +18,13 @@ def digest(path):
 
 
 def create(build, output):
-    candidates = list((build / 'bin/targets/armsr/armv8').glob('*rootfs.tar.gz'))
-    if len(candidates) != 1:
-        raise ValueError(f'Expected one ARM64 rootfs, found {len(candidates)}')
+    # OpenWrt also emits generic-targz-rootfs.tar.gz. Select the canonical
+    # rootfs explicitly; a broad glob rejects a successful two-output build.
+    rootfs = build / 'bin/targets/armsr/armv8' / ROOTFS_NAME
+    if rootfs.is_symlink() or not rootfs.is_file():
+        raise ValueError(f'Missing canonical ARM64 rootfs: {rootfs}')
     output.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(candidates[0], output / ROOTFS_NAME)
+    shutil.copyfile(rootfs, output / ROOTFS_NAME)
     shutil.copyfile(build / '.config', output / 'openwrt.config')
     shutil.copyfile(ROOT / 'configs/am6bplus/sources.lock.json', output / 'sources.lock.json')
     for path in (build / 'bin/targets/armsr/armv8').glob('*.manifest'):
