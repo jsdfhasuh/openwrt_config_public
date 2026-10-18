@@ -1,0 +1,14 @@
+{
+  "luci-am6bplus-temperature": {
+    "description": "Read AM6B Plus CPU and DDR temperature sensors",
+    "read": {
+      "ubus": {
+        "file": ["read"]
+      },
+      "file": {
+        "/sys/class/thermal/thermal_zone0/temp": ["read"],
+        "/sys/class/thermal/thermal_zone1/temp": ["read"]
+      }
+    }
+  }
+}

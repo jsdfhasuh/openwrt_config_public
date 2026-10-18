@@ -28,10 +28,29 @@ def resolved_core():
 class TestConfiguration(unittest.TestCase):
     def test_all_sources_are_pinned(self):
         lock = json.loads((ROOT / 'configs/am6bplus/sources.lock.json').read_text())
-        specs = [lock['openwrt'], *lock['feeds'].values(), *lock['plugins'].values()]
+        specs = [lock['openwrt'], *lock['feeds'].values(), *lock['plugins'].values(),
+                 *lock.get('local_packages', {}).values()]
         for spec in specs:
             self.assertRegex(spec['commit'], r'^[a-f0-9]{40}$')
             self.assertTrue(spec['url'].startswith('https://github.com/'))
+
+    def test_runtime_package_and_overlay_integration(self):
+        lock = json.loads((ROOT / 'configs/am6bplus/sources.lock.json').read_text())
+        v2dat = lock['local_packages']['v2dat']
+        recipe = (ROOT / 'packages/am6bplus/v2dat/Makefile').read_text()
+        self.assertIn('PKG_SOURCE_VERSION:=' + v2dat['commit'], recipe)
+        self.assertIn('PKG_HASH:=' + v2dat['source_sha256'], recipe)
+        self.assertIn('PKG_BUILD_DEPENDS:=golang/host', recipe)
+        seed = (ROOT / 'configs/am6bplus/seed.config').read_text()
+        for package in ('v2dat', 'vsftpd', 'luci-app-wol', 'luci-i18n-wol-zh-cn',
+                        'python3-requests', 'python3-yaml'):
+            self.assertIn('CONFIG_PACKAGE_' + package + '=y\n', seed)
+        prepare = (ROOT / 'scripts/am6bplus/prepare-source.py').read_text()
+        self.assertIn("REPO / 'packages/am6bplus/v2dat'", prepare)
+        self.assertIn("REPO / 'files/am6bplus'", prepare)
+        self.assertIn('samba4 vsftpd ttyd', prepare)
+        finish = (ROOT / 'scripts/am6bplus/finish-packit-rootfs.py').read_text()
+        self.assertIn("['dockerd', 'containerd', 'vsftpd']", finish)
 
     def test_config_rejects_silently_dropped_package(self):
         module = load('verify-config')

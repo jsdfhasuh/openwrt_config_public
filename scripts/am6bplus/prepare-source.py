@@ -84,9 +84,11 @@ def main():
     run('./scripts/feeds', 'install', '-a', cwd=build)
     for name, spec in lock['plugins'].items():
         checkout(spec, build / 'package' / 'am6bplus' / name)
+    shutil.copytree(REPO / 'packages/am6bplus/v2dat', build / 'package/am6bplus/v2dat')
     shutil.copyfile(REPO / 'configs/am6bplus/seed.config', build / '.config')
     # Dedicated overlay. No inherited credentials, disk formatting or x86 core.
     overlay = build / 'files'
+    shutil.copytree(REPO / 'files/am6bplus', overlay, dirs_exist_ok=True)
     resolved_core['binary_sha256'] = install_core(resolved_core, overlay / 'etc/openclash/core/clash_meta')
     (build / 'resolved-core.json').write_text(json.dumps(resolved_core, indent=2) + '\n')
     grow = overlay / 'usr/sbin/am6bplus-grow-sd'
@@ -100,7 +102,7 @@ def main():
     defaults.parent.mkdir(parents=True, exist_ok=True)
     defaults.write_text('''#!/bin/sh
 # Services are installed but require deliberate configuration before use.
-for service in openclash mosdns ddns-go adguardhome miniupnpd banip containerd dockerd samba4 ttyd; do
+for service in openclash mosdns ddns-go adguardhome miniupnpd banip containerd dockerd samba4 vsftpd ttyd; do
     [ ! -x "/etc/init.d/$service" ] || "/etc/init.d/$service" disable
 done
 uci -q set openclash.config.enable='0'

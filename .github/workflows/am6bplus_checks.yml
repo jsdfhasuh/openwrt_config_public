@@ -1,0 +1,41 @@
+name: AM6B Plus - Runtime regression checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'configs/am6bplus/**'
+      - 'scripts/am6bplus/**'
+      - 'files/am6bplus/**'
+      - 'packages/am6bplus/**'
+      - 'tests/am6bplus/**'
+      - '.github/workflows/am6bplus_checks.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'configs/am6bplus/**'
+      - 'scripts/am6bplus/**'
+      - 'files/am6bplus/**'
+      - 'packages/am6bplus/**'
+      - 'tests/am6bplus/**'
+      - '.github/workflows/am6bplus_checks.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Validate source, package and rootfs contracts
+        run: python3 -m unittest discover -s tests/am6bplus -v
+      - name: Validate temperature rendering and read-only permissions
+        run: node tests/am6bplus/test_temperature.cjs
+      - name: Validate live installer shell syntax
+        run: |
+          sh -n scripts/am6bplus/install-temperature.sh
+          sh -n scripts/am6bplus/install-v2dat.sh

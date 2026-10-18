@@ -22,14 +22,14 @@
 
 参考用户仓库 `a475f7a2214da748ca229fcd4bb9fb6a81a32964` 的 x86.config。全部 472 个选中条目的迁移处理见 `x86-package-migration.csv`。
 
-显式选择 92 个包配置：Argon 配置及主题、banIP、commands、ddns-go、firewall、mosdns、OpenClash、APK 软件包管理、Samba4、ttyd、UPnP，以及 AdGuard Home、Python3、pip3 及现选子模块、WireGuard 工具、SFTP、诊断/磁盘工具、containerd/runc 等。
+显式包配置以 `configs/am6bplus/seed.config` 为准，包括 Argon 配置及主题、banIP、commands、ddns-go、firewall、mosdns、OpenClash、APK 软件包管理、Samba4、ttyd、UPnP，以及 AdGuard Home、Python3、pip3、WireGuard、SFTP、诊断/磁盘工具等。
 
 - nft-qos 已按用户决定舍弃；官方因多个未修问题将其删除，不盲搬旧版。
-- 当前 x86 未选的旧 ARM dockerman/mwan3/wol 页面/OpenWrt2020 主题不默认加入；etherwake 工具按当前 x86 保留。
-- 当前 x86 没选 Docker daemon/UI，不擅自新增；containerd/runc 不等于完整 Docker 产品。
+- 后续按用户要求加入 Docker daemon/UI 和 WoL 页面；mwan3/OpenWrt2020 主题仍未加入。
+- containerd/runc 不等于完整 Docker 产品；目前已显式选择 docker、dockerd 和 dockerman。
 - attendedsysupgrade 不适用于这种外部内核 SD 适配，排除其页面和通用升级入口。
 - x86 驱动、GRUB 和固件不迁移；库和依赖由 ARM64 Kconfig 重算。
-- 新 mosdns 依赖 geo2txt，不伪称旧 v2dat 已安装。
+- 新 mosdns 依赖 geo2txt；为旧维护脚本另外加入固定源码的 v2dat，不替换 geo2txt。
 - 不复制原 custom.sh 的自动格式化盘逻辑、固定 AdGuard Home 凭据或 x86 核心。
 
 2024 年找回的 ARM 配置只作历史参考，不能证明现卡内核/启动参数。每个显式配置项在 make defconfig 后核对；缺包或依赖丢失会直接失败。
@@ -54,9 +54,9 @@
 
 外置内核与官方 armsr APK 的内核 ABI 不一致。保留原 APK 数据库并不使其与替换后的模块文件一致。不得对 kernel/kmod 做 install/upgrade/fix/reinstall，不做 blanket apk upgrade；普通应用也可能间接拉入 kmod，须审查依赖。禁用某些 kmod 源不等于彻底隔离这一风险。用户态 APK 操作仍需设备验证，更新优先重建整镜像。
 
-OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、ttyd 初始禁止自启动，先配置后启用。不自动迁移旧密码、订阅、网络或防火墙。
+OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、Docker/containerd、Samba、FTP、ttyd 初始禁止自启动，先配置后启用。不自动迁移旧密码、订阅、网络或防火墙。
 
-构建成功只证明产物生成；不能代替真实盒子的启动、网络、温控、Wi-Fi、容器、应用和恢复测试。硬件测试目前 NOT_RUN。构建/打包真实结果以本次 GitHub Actions 与产物 STATUS/manifest 为准，不能把早期静态测试当作完整编译通过。
+构建成功只证明产物生成；不能代替真实盒子的启动、网络、温控、Wi-Fi、容器、应用和恢复测试。2026-10-18 的有限实机结果见 RUNTIME.zh-CN.md；不自动推广到每个新镜像。构建/打包真实结果以对应 GitHub Actions 与产物 STATUS/manifest 为准。
 
 
 ### 只修复打包而复用成功 rootfs
@@ -73,7 +73,7 @@ OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、t
 
 手动扩容工具随新版根分区预装：`/usr/sbin/am6bplus-grow-sd`。
 说明：`/usr/share/doc/am6bplus-grow-sd/README.zh-CN.md`。没有开机自动执行钩子。
-先只读预览并备份，再按两阶段步骤操作；真实 SD 扩容未测试（NOT_RUN）。
+先只读预览并备份，再按两阶段步骤操作；2026-10-18 已在一张 128GB SD 上完成约 118.7 GiB 根分区扩容。
 
 
 ### Docker / Home Assistant Container
@@ -85,7 +85,7 @@ OpenClash、mosdns、DDNS、AdGuard Home、UPnP、banIP、containerd、Samba、t
 保留原 firewall4/iptables-nft；上游 dockerd 配置提示 fw4 兼容层存在限制，
 网络、防火墙与设备发现必须实机验证，不自动替换防火墙或开放端口。
 Home Assistant Container 自带 Python，不依赖宿主 pip3；没有 Supervisor/apps。
-Docker 守护进程、Home Assistant、USB/蓝牙透传及实卡扩容均尚未实机验证（NOT_RUN）。
+Home Assistant、USB/蓝牙透传和长期容器稳定性仍需单独验收；实卡扩容已有上述一次验证。
 
 
 ### OpenClash Smart ARM64 内核
@@ -115,6 +115,11 @@ SHA256用于完整性校验，不等于数字签名或实机兼容性保证。
 不通过 APK 安装官方 armsr 的 kmod 来修复外置 Flippy 内核。
 
 2026-10-18 实机验证：旧镜像插卡后 USB 可枚举，但未绑定驱动；手动 `modprobe r8152`
-后固件加载成功并生成 `eth1`。这不代表已验证网线协商、吞吐或重启自动加载。
+后固件加载成功并生成 `eth1`。后续该设备已验证重启后识别、千兆全双工协商和实际出网；未验证长期稳定性或满速吞吐。
 此修复位于打包阶段，可以复用已有成功 rootfs 重新打包，无需重编应用。
 不会自动把 USB 网口加入 LAN/WAN，也不会重启设备或执行 SD 扩容。
+
+### 温度显示与迁移补齐
+
+温度组件、v2dat、WoL、FTP/Python 依赖及私有配置迁移边界见 [实机改动与复用](RUNTIME.zh-CN.md)。
+公开仓库只保存可复用代码和步骤，不保存现用密码、密钥、订阅、备份或运行日志。
