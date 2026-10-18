@@ -93,9 +93,9 @@ def main():
         path = root / 'sbin' / name
         path.unlink(missing_ok=True)
         path.symlink_to('kmod')
-    # Do not let Docker alter the network or fill the small root partition on boot.
-    # Remove only these services' own rc.d links; users opt in after SD expansion.
-    for service in ['dockerd', 'containerd']:
+    # Docker and FTP require deliberate storage/access configuration before use.
+    # Remove only these services' own rc.d links.
+    for service in ['dockerd', 'containerd', 'vsftpd']:
         for link in (root / 'etc/rc.d').glob('*' + service):
             require(link.is_symlink(), f'Unexpected non-symlink service entry: {link}')
             require(os.readlink(link) in [f'../init.d/{service}', f'/etc/init.d/{service}'],

@@ -48,6 +48,13 @@
       "commit": "3f844c467ce5075e2b0dd61ebf7271640eb08da2"
     }
   },
+  "local_packages": {
+    "v2dat": {
+      "url": "https://github.com/urlesistiana/v2dat",
+      "commit": "47b8ee51fb528e11e1a83453b7e767a18d20d1f7",
+      "source_sha256": "dca45a31006aca3dba5f543f6990ca755ffb2bde8e533cc2bbe6bac9ec12f157"
+    }
+  },
   "reference_config_sha256": "6ae339e71b994b6b63d1c8b25b1cc8888be0deedb1183a202aafdd2c09e4b0ca",
   "configuration_repository_commit": "a475f7a2214da748ca229fcd4bb9fb6a81a32964",
   "current_x86_config_sha256": "0dc97d319d6bc9097be4b9be5778029fb148cc4d359ba7f2f2b74a3436f0f7a6",
