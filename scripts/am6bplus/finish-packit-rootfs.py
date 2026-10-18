@@ -9,7 +9,7 @@ import subprocess
 import sys
 
 MODULES = '''meson_gxl stmmac stmmac_platform dwmac_meson8b
-phy_meson_g12a_usb2 phy_meson_g12a_usb3_pcie xhci_hcd xhci_plat_hcd dwc3 dwc3_meson_g12a
+phy_meson_g12a_usb2 phy_meson_g12a_usb3_pcie xhci_hcd xhci_plat_hcd dwc3 dwc3_meson_g12a r8152
 br_netfilter bridge veth tun nf_tables nft_chain_nat nft_masq nft_redir nft_reject_inet
 nft_fib_inet nft_ct nft_tproxy nft_socket inet_diag xt_TPROXY ip_tables iptable_filter
 iptable_nat xt_MASQUERADE xt_addrtype xt_conntrack
@@ -18,7 +18,7 @@ REQUIRED_BUILTIN = '''CGROUPS MEMCG CGROUP_PIDS CGROUP_DEVICE CGROUP_CPUACCT
 CFS_BANDWIDTH USER_NS POSIX_MQUEUE NAMESPACES NET_NS PID_NS IPC_NS UTS_NS
 SECCOMP SECCOMP_FILTER OVERLAY_FS BTRFS_FS
 CPUSETS BLK_CGROUP CGROUP_FREEZER CGROUP_SCHED CGROUP_BPF BPF_SYSCALL'''.split()
-REQUIRED = '''VETH BRIDGE BRIDGE_NETFILTER TUN NF_CONNTRACK NF_NAT NF_TABLES
+REQUIRED = '''USB_RTL8152 VETH BRIDGE BRIDGE_NETFILTER TUN NF_CONNTRACK NF_NAT NF_TABLES
 NFT_CT NFT_MASQ NFT_REDIR NFT_REJECT NFT_REJECT_INET NFT_FIB_INET NFT_LOG NFT_NAT
 NFT_TPROXY NFT_SOCKET INET_DIAG NETFILTER_XT_TARGET_TPROXY IP_NF_IPTABLES
 IP_NF_FILTER IP_NF_NAT IP6_NF_IPTABLES NETFILTER_XT_MATCH_ADDRTYPE
@@ -30,6 +30,24 @@ IP_VS IP_VS_IPV6 IP_VS_RR NETFILTER_XT_MATCH_IPVS'''.split()
 def require(condition, message):
     if not condition:
         raise SystemExit(message)
+
+
+def configure_modules(root, kernel):
+    modules = root / 'lib/modules' / kernel
+    require(modules.is_dir(), 'Matched kernel modules missing.')
+    available = {p.stem.replace('-', '_') for p in modules.rglob('*.ko')}
+    available |= {Path(p).stem.replace('-', '_') for p in (modules / 'modules.builtin').read_text().splitlines()}
+    require(set(MODULES) <= available, 'Missing selected modules: ' + str(set(MODULES) - available))
+    require((root / 'lib/firmware/rtl_nic/rtl8153b-2.fw').is_file(), 'RTL8153B firmware missing.')
+    for directory in ['modules.d', 'modules-boot.d']:
+        path = root / 'etc' / directory
+        if path.exists():
+            require(not (root / 'etc' / f'{directory}.armsr-disabled').exists(), 'Duplicate adaptation.')
+            path.rename(root / 'etc' / f'{directory}.armsr-disabled')
+        path.mkdir()
+    # OpenWrt loads this list at boot; shipping Flippy .ko files alone is insufficient.
+    (root / 'etc/modules.d/20-am6bplus').write_text('\n'.join(MODULES) + '\n')
+    subprocess.run(['depmod', '-b', str(root), kernel], check=True)
 
 
 def main():
@@ -68,19 +86,7 @@ def main():
         require(fstab_text.count(before) == 1, f'Upstream fstab context changed: {option}')
         fstab_text = fstab_text.replace(before, f"option {option} '0'")
     fstab.write_text(fstab_text)
-    modules = root / 'lib/modules' / kernel
-    require(modules.is_dir(), 'Matched kernel modules missing.')
-    available = {p.stem.replace('-', '_') for p in modules.rglob('*.ko')}
-    available |= {Path(p).stem.replace('-', '_') for p in (modules / 'modules.builtin').read_text().splitlines()}
-    require(set(MODULES) <= available, 'Missing selected modules: ' + str(set(MODULES) - available))
-    for directory in ['modules.d', 'modules-boot.d']:
-        path = root / 'etc' / directory
-        if path.exists():
-            require(not (root / 'etc' / f'{directory}.armsr-disabled').exists(), 'Duplicate adaptation.')
-            path.rename(root / 'etc' / f'{directory}.armsr-disabled')
-        path.mkdir()
-    (root / 'etc/modules.d/20-am6bplus').write_text('\n'.join(MODULES) + '\n')
-    subprocess.run(['depmod', '-b', str(root), kernel], check=True)
+    configure_modules(root, kernel)
     shutil.copyfile(helper / 'kmod', root / 'sbin/kmod')
     (root / 'sbin/kmod').chmod(0o755)
     for name in ['depmod', 'insmod', 'lsmod', 'modinfo', 'modprobe', 'rmmod']:
